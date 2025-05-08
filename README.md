@@ -20,6 +20,3 @@ for new games you want to play! Search for new games to play and have fun with!
 | Version | Description                               |
 |-------------------------|---------|-------------------------------------------|
 | 1.0.0   | First Version                             |
-| 2.5.4   | Framework for building Java applications. |
-| 8.0     | Database used for storing user data.      |
-| 1.18.22 | Java library to reduce boilerplate code.  |

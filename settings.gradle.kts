@@ -11,4 +11,4 @@ plugins {
 }
 
 rootProject.name = "kamika"
-include("app", "list", "utilities")
+include("app", "list", "utilities","model","repository")
