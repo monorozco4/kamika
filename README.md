@@ -17,6 +17,6 @@ for new games you want to play! Search for new games to play and have fun with!
 
 ## VERSIONS
 
-| Version | Description                               |
-|-------------------------|---------|-------------------------------------------|
-| 1.0.0   | First Version                             |
+| Version   | Description   |
+|-----------|---------------|
+| 1.0.0     | First Version |
