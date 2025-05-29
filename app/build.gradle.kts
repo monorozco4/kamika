@@ -7,8 +7,14 @@ plugins {
 }
 
 dependencies {
-    implementation("org.apache.commons:commons-text")
-    implementation(project(":utilities"))
+    implementation(project(":jdbc"))
+    implementation(project(":jpa"))
+    implementation(project(":model"))
+    implementation(project(":repositories"))
+
+    implementation("com.mysql:mysql-connector-j:9.3.0")
+    implementation("com.github.freva:ascii-table:1.8.0")
+
 }
 
 application {
