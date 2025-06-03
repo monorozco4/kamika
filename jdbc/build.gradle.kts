@@ -10,5 +10,10 @@ dependencies {
     implementation(project(":model"))
     implementation(project(":repositories"))
 
+    // MySQL JDBC Driver
     implementation("com.mysql:mysql-connector-j:9.3.0")
+
+    // Testing dependencies
+    testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
+    testImplementation("org.mybatis:mybatis:3.5.19")
 }
