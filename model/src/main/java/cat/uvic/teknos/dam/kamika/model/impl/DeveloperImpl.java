@@ -1,12 +1,16 @@
-package cat.uvic.teknos.dam.kamika.model.impl;
+package cat.uvic.teknos.dam.kamika.repositories.impl;
 
-import cat.uvic.teknos.dam.kamika.model.Developer;
-
+import cat.uvic.teknos.dam.kamika.repositories.Developer;
 import java.util.Objects;
 
 /**
- * Implementación concreta de la interfaz Developer.
- * Representa a un desarrollador de videojuegos con sus principales atributos.
+ * Concrete implementation of the Developer interface.
+ * Represents a video game developer with its main attributes.
+ * <p>
+ * Related tables:
+ * - GAME: One-to-many relationship (developer creates multiple games).
+ * - PUBLISHING: Many-to-many relationship with Publisher.
+ * </p>
  */
 public class DeveloperImpl implements Developer {
 
@@ -56,13 +60,17 @@ public class DeveloperImpl implements Developer {
     }
 
     /**
-     * Compara este objeto con otro para ver si son iguales.
+     * Compares this object with another to check equality.
+     * Two developers are considered equal if they have the same ID, name,
+     * country, and foundation year.
+     *
+     * @param o the object to compare
+     * @return true if objects are equal, false otherwise
      */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Developer)) return false;
-        Developer that = (Developer) o;
+        if (!(o instanceof Developer that)) return false;
         return getId() == that.getId() &&
                 Objects.equals(getName(), that.getName()) &&
                 Objects.equals(getCountry(), that.getCountry()) &&
@@ -70,7 +78,9 @@ public class DeveloperImpl implements Developer {
     }
 
     /**
-     * Genera un código hash único basado en los atributos principales.
+     * Generates a unique hash code based on the main attributes.
+     *
+     * @return the hash code for this object
      */
     @Override
     public int hashCode() {
@@ -78,7 +88,9 @@ public class DeveloperImpl implements Developer {
     }
 
     /**
-     * Representación textual del objeto, útil para debugging.
+     * String representation of the object, useful for debugging.
+     *
+     * @return a string containing all relevant fields
      */
     @Override
     public String toString() {

@@ -1,48 +1,48 @@
-// Define el paquete donde pertenece esta clase
-package cat.uvic.teknos.dam.kamika.model;
+package cat.uvic.teknos.dam.kamika.repositories;
 
-// Importa las clases necesarias
+import cat.uvic.teknos.dam.kamika.model.GameConsole;
+
 import java.util.Optional;
 
 /**
- * Interfaz que define operaciones básicas para gestionar la relación entre juegos y consolas.
- * Representa una tabla intermedia (GameConsole) en la base de datos.
+ * Repository interface for managing GameConsole entities.
+ * Follows the repository pattern to abstract the data access operations.
  */
 public interface GameConsoleRepository {
 
     /**
-     * Busca un registro por sus dos claves primarias: gameId y consoleId.
-     * Devuelve un Optional para evitar errores si no se encuentra.
+     * Finds a record by its composite primary key: gameId and consoleId.
+     * Returns an Optional to avoid errors if no result is found.
      */
-    <GameConsole> Optional<GameConsole> findById(int gameId, int consoleId);
+    Optional<GameConsole> findById(int gameId, int consoleId);
 
     /**
-     * Guarda o actualiza un registro en la base de datos.
-     * Recibe un objeto GameConsole y lo devuelve guardado.
+     * Saves or updates a record in the database.
+     * Returns the saved GameConsole object.
      */
-    <GameConsole> GameConsole save(GameConsole gameConsole);
+    GameConsole save(GameConsole gameConsole);
 
     /**
-     * Elimina un registro de la base de datos.
-     * Recibe el objeto a eliminar.
+     * Deletes a record from the database.
+     * Takes the entity to be deleted as a parameter.
      */
-    <GameConsole> void delete(GameConsole gameConsole);
+    void delete(GameConsole gameConsole);
 
     /**
-     * Elimina un registro usando sus dos identificadores.
-     * Devuelve true si se eliminó correctamente, false si no existía.
+     * Deletes a record using its composite key: gameId and consoleId.
+     * Returns true if successfully deleted, false if it did not exist.
      */
     boolean deleteById(int gameId, int consoleId);
 
     /**
-     * Cuenta cuántos registros hay en total en la tabla GameConsole.
-     * Devuelve el número total como long.
+     * Counts how many records exist in the GameConsole table.
+     * Returns the total number of records as a long.
      */
     long count();
 
     /**
-     * Comprueba si existe un registro con los identificadores dados.
-     * Devuelve true si existe, false si no.
+     * Checks whether a record exists with the given identifiers.
+     * Returns true if the record exists, false otherwise.
      */
     boolean existsById(int gameId, int consoleId);
 }

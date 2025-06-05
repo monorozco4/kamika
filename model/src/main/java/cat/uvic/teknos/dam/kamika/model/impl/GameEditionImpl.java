@@ -1,13 +1,13 @@
-package cat.uvic.teknos.dam.kamika.model.impl;
+package cat.uvic.teknos.dam.kamika.repositories.impl;
 
-import cat.uvic.teknos.dam.kamika.model.Game;
-import cat.uvic.teknos.dam.kamika.model.GameEdition;
+import cat.uvic.teknos.dam.kamika.repositories.Game;
+import cat.uvic.teknos.dam.kamika.repositories.GameEdition;
 
 import java.util.Objects;
 
 /**
- * Implementación concreta de la interfaz GameEdition.
- * Representa una edición específica de un juego (por ejemplo, edición estándar, deluxe, coleccionista...).
+ * Concrete implementation of the GameEdition interface.
+ * Represents a specific edition of a game (e.g., standard, deluxe, collector's edition).
  */
 public class GameEditionImpl implements GameEdition {
 
@@ -57,14 +57,16 @@ public class GameEditionImpl implements GameEdition {
     }
 
     /**
-     * Compara este objeto con otro para ver si son iguales.
+     * Compares this object with another to check equality.
+     * Two editions are considered equal if they have the same name, special content and price.
+     *
+     * @param o the object to compare
+     * @return true if objects are equal, false otherwise
      */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof GameEdition)) return false;
-
-        GameEdition that = (GameEdition) o;
+        if (!(o instanceof GameEdition that)) return false;
 
         return Double.compare(that.getPrice(), getPrice()) == 0 &&
                 Objects.equals(getEditionName(), that.getEditionName()) &&
@@ -72,7 +74,9 @@ public class GameEditionImpl implements GameEdition {
     }
 
     /**
-     * Genera un código hash único basado en los atributos principales.
+     * Generates a unique hash code based on the main attributes.
+     *
+     * @return the hash code for this object
      */
     @Override
     public int hashCode() {
@@ -80,7 +84,9 @@ public class GameEditionImpl implements GameEdition {
     }
 
     /**
-     * Representación textual del objeto, útil para debugging.
+     * String representation of the object, useful for debugging.
+     *
+     * @return a string containing all relevant fields
      */
     @Override
     public String toString() {

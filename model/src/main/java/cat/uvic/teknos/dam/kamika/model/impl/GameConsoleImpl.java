@@ -1,15 +1,20 @@
-package cat.uvic.teknos.dam.kamika.model.impl;
+package cat.uvic.teknos.dam.kamika.repositories.impl;
 
-import cat.uvic.teknos.dam.kamika.model.Game;
-import cat.uvic.teknos.dam.kamika.model.Console;
-import cat.uvic.teknos.dam.kamika.model.GameConsole;
+import cat.uvic.teknos.dam.kamika.repositories.Game;
+import cat.uvic.teknos.dam.kamika.repositories.Console;
+import cat.uvic.teknos.dam.kamika.repositories.GameConsole;
 
 import java.time.LocalDate;
 import java.util.Objects;
 
 /**
- * Implementación concreta de la interfaz GameConsole.
- * Representa la relación entre un juego y una consola (lanzamiento, exclusividad, resolución...).
+ * Concrete implementation of the GameConsole interface.
+ * Represents the many-to-many relationship between Game and Console with additional attributes.
+ * <p>
+ * Related tables:
+ * - GAME: One side of the relationship.
+ * - CONSOLE: Other side of the relationship.
+ * </p>
  */
 public class GameConsoleImpl implements GameConsole {
 
@@ -21,6 +26,8 @@ public class GameConsoleImpl implements GameConsole {
 
     private Game game;
     private Console console;
+
+    // Getters and setters for primary keys
 
     @Override
     public int getGameId() {
@@ -41,6 +48,8 @@ public class GameConsoleImpl implements GameConsole {
     public void setConsoleId(int id) {
         this.consoleId = id;
     }
+
+    // Getters and setters for additional attributes
 
     @Override
     public LocalDate getReleaseDate() {
@@ -72,6 +81,8 @@ public class GameConsoleImpl implements GameConsole {
         this.resolution = resolution;
     }
 
+    // Getters and setters for full entity references
+
     @Override
     public Game getGame() {
         return game;
@@ -93,13 +104,17 @@ public class GameConsoleImpl implements GameConsole {
     }
 
     /**
-     * Compara este objeto con otro para ver si son iguales.
+     * Compares this object with another to check equality.
+     * Two GameConsole instances are considered equal if they have the same game ID, console ID,
+     * release date, exclusivity flag, and resolution.
+     *
+     * @param o the object to compare
+     * @return true if objects are equal, false otherwise
      */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof GameConsole)) return false;
-        GameConsole that = (GameConsole) o;
+        if (!(o instanceof GameConsole that)) return false;
         return getGameId() == that.getGameId() &&
                 getConsoleId() == that.getConsoleId() &&
                 isExclusive() == that.isExclusive() &&
@@ -108,7 +123,9 @@ public class GameConsoleImpl implements GameConsole {
     }
 
     /**
-     * Genera un código hash único basado en los atributos principales.
+     * Generates a unique hash code based on the main attributes.
+     *
+     * @return the hash code for this object
      */
     @Override
     public int hashCode() {
@@ -116,7 +133,9 @@ public class GameConsoleImpl implements GameConsole {
     }
 
     /**
-     * Representación textual del objeto, útil para debugging.
+     * String representation of the object, useful for debugging.
+     *
+     * @return a string containing all relevant fields
      */
     @Override
     public String toString() {

@@ -1,19 +1,16 @@
-package cat.uvic.teknos.dam.kamika.model.impl;
+package cat.uvic.teknos.dam.kamika.repositories.impl;
 
-import cat.uvic.teknos.dam.kamika.model.Game;
-import cat.uvic.teknos.dam.kamika.model.Console;
-import cat.uvic.teknos.dam.kamika.model.Developer;
-import cat.uvic.teknos.dam.kamika.model.Genre;
-import cat.uvic.teknos.dam.kamika.model.GameEdition;
-import cat.uvic.teknos.dam.kamika.model.Publisher;
+import cat.uvic.teknos.dam.kamika.repositories.*;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 /**
- * Implementación concreta de la interfaz Game.
- * Contiene los atributos principales del juego, como título, fecha de lanzamiento, etc.
+ * Concrete implementation of the Game interface.
+ * Contains the main attributes of a video game, such as title, release date, etc.
+ * <p>
+ * This class avoids circular references in toString() to prevent infinite loops
+ * when printing related entities like Developer, Publisher, Genre, or Console.
+ * </p>
  */
 public class GameImpl implements Game {
 
@@ -129,14 +126,17 @@ public class GameImpl implements Game {
     }
 
     /**
-     * Compara este objeto con otro para ver si son iguales.
-     * Se usa el ID y otros campos relevantes para determinar la igualdad.
+     * Compares this object with another to check equality.
+     * Two games are considered equal if they have the same ID, title,
+     * release date, PEgi rating, and multiplayer flag.
+     *
+     * @param o the object to compare
+     * @return true if objects are equal, false otherwise
      */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Game)) return false;
-        Game that = (Game) o;
+        if (!(o instanceof Game that)) return false;
         return getId() == that.getId() &&
                 isMultiplayer() == that.isMultiplayer() &&
                 Objects.equals(getTitle(), that.getTitle()) &&
@@ -145,7 +145,9 @@ public class GameImpl implements Game {
     }
 
     /**
-     * Genera un código hash único basado en los atributos principales.
+     * Generates a unique hash code based on the main attributes.
+     *
+     * @return the hash code for this object
      */
     @Override
     public int hashCode() {
@@ -153,7 +155,10 @@ public class GameImpl implements Game {
     }
 
     /**
-     * Representación textual del objeto, útil para debugging.
+     * String representation of the object, useful for debugging.
+     * Does not include collections or entity references to avoid infinite recursion.
+     *
+     * @return a string containing key fields only
      */
     @Override
     public String toString() {

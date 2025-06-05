@@ -1,13 +1,17 @@
-package cat.uvic.teknos.dam.kamika.model.impl;
+package cat.uvic.teknos.dam.kamika.repositories.impl;
 
-import cat.uvic.teknos.dam.kamika.model.Publisher;
-import cat.uvic.teknos.dam.kamika.model.Developer;
+import cat.uvic.teknos.dam.kamika.repositories.Publisher;
+import cat.uvic.teknos.dam.kamika.repositories.Developer;
 
 import java.util.Objects;
 
 /**
- * Implementación concreta de la interfaz Publisher.
- * Representa a una empresa que publica videojuegos.
+ * Concrete implementation of the Publisher interface.
+ * Represents a company that publishes video games.
+ * <p>
+ * This class avoids circular references in toString() to prevent infinite loops
+ * when printing related entities like Developer or Game.
+ * </p>
  */
 public class PublisherImpl implements Publisher {
 
@@ -57,14 +61,17 @@ public class PublisherImpl implements Publisher {
     }
 
     /**
-     * Compara este objeto con otro para ver si son iguales.
+     * Compares this object with another to check equality.
+     * Two publishers are considered equal if they have the same ID, name,
+     * country, and linked developer.
+     *
+     * @param o the object to compare
+     * @return true if objects are equal, false otherwise
      */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Publisher)) return false;
-
-        Publisher publisher = (Publisher) o;
+        if (!(o instanceof Publisher publisher)) return false;
 
         return getId() == publisher.getId() &&
                 Objects.equals(getName(), publisher.getName()) &&
@@ -73,7 +80,9 @@ public class PublisherImpl implements Publisher {
     }
 
     /**
-     * Genera un código hash único basado en los atributos principales.
+     * Generates a unique hash code based on the main attributes.
+     *
+     * @return the hash code for this object
      */
     @Override
     public int hashCode() {
@@ -81,7 +90,10 @@ public class PublisherImpl implements Publisher {
     }
 
     /**
-     * Representación textual del objeto, útil para debugging.
+     * String representation of the object, useful for debugging.
+     * Does not include full related entity details to avoid infinite recursion.
+     *
+     * @return a string containing key fields only
      */
     @Override
     public String toString() {

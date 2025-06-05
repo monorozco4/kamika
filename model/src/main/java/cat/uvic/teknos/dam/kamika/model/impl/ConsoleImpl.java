@@ -1,12 +1,15 @@
-package cat.uvic.teknos.dam.kamika.model.impl;
+package cat.uvic.teknos.dam.kamika.repositories.impl;
 
-import cat.uvic.teknos.dam.kamika.model.Console;
-
+import cat.uvic.teknos.dam.kamika.repositories.Console;
 import java.util.Objects;
 
 /**
- * Implementación concreta de la interfaz Console.
- * Representa una consola de videojuegos con sus principales atributos.
+ * Concrete implementation of the Console interface.
+ * Represents a video game console with its main attributes.
+ * <p>
+ * Related tables:
+ * - Many-to-many relationship with Game.
+ * </p>
  */
 public class ConsoleImpl implements Console {
 
@@ -56,13 +59,17 @@ public class ConsoleImpl implements Console {
     }
 
     /**
-     * Compara este objeto con otro para ver si son iguales.
+     * Compares this object with another to check equality.
+     * Two consoles are considered equal if they have the same ID, name,
+     * manufacturer, and release year.
+     *
+     * @param o the object to compare
+     * @return true if objects are equal, false otherwise
      */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Console)) return false;
-        Console that = (Console) o;
+        if (!(o instanceof Console that)) return false;
         return getId() == that.getId() &&
                 Objects.equals(getName(), that.getName()) &&
                 Objects.equals(getManufacturer(), that.getManufacturer()) &&
@@ -70,7 +77,9 @@ public class ConsoleImpl implements Console {
     }
 
     /**
-     * Genera un código hash único basado en los atributos principales.
+     * Generates a unique hash code based on the main attributes.
+     *
+     * @return the hash code for this object
      */
     @Override
     public int hashCode() {
@@ -78,7 +87,9 @@ public class ConsoleImpl implements Console {
     }
 
     /**
-     * Representación textual del objeto, útil para debugging.
+     * String representation of the object, useful for debugging.
+     *
+     * @return a string containing all relevant fields
      */
     @Override
     public String toString() {

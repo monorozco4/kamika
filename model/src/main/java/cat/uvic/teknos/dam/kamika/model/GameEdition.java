@@ -1,4 +1,13 @@
-package cat.uvic.teknos.dam.kamika.model;
+package cat.uvic.teknos.dam.kamika.repositories;
+
+/**
+ * Interface representing a specific edition of a game.
+ * Defines the basic properties and behaviors of a game edition entity.
+ * <p>
+ * Related tables:
+ * - GAME: Many-to-one relationship (each edition belongs to one game).
+ * </p>
+ */
 
 public interface GameEdition {
     Game getGame();

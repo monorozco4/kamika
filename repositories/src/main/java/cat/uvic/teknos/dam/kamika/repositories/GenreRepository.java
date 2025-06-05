@@ -1,4 +1,6 @@
-package cat.uvic.teknos.dam.kamika.model;
+package cat.uvic.teknos.dam.kamika.repositories;
+
+import cat.uvic.teknos.dam.kamika.model.Genre;
 
 import java.util.List;
 import java.util.Optional;

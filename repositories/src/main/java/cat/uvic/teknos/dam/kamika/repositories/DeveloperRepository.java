@@ -1,6 +1,17 @@
-package cat.uvic.teknos.dam.kamika.model;
+/**
+ * Repository interface for managing Developer entities.
+ * Follows the repository pattern to abstract the data access operations.
+ * <p>
+ * Related tables:
+ * - Game: A developer can develop multiple games (one-to-many).
+ * - Publisher: Developers can also act as publishers in self-publishing scenarios (one-to-zero-or-one).
+ * </p>
+ */
 
-import java.util.List;
+package cat.uvic.teknos.dam.kamika.repositories;
+
+import cat.uvic.teknos.dam.kamika.model.Developer;
+
 import java.util.Optional;
 
 /**
@@ -16,13 +27,6 @@ public interface DeveloperRepository {
      * @return an Optional containing the developer if found, empty otherwise
      */
     Optional<Developer> findById(int id);
-
-    /**
-     * Retrieve all developers.
-     *
-     * @return a list of all developers
-     */
-    List<Developer> findAll();
 
     /**
      * Save a new developer or update an existing one.
@@ -63,103 +67,6 @@ public interface DeveloperRepository {
     boolean existsById(int id);
 
     // Custom methods
-
-    /**
-     * Find developers by name (case-insensitive, partial match).
-     *
-     * @param name the name to search for
-     * @return a list of developers matching the name
-     */
-    List<Developer> findByNameContainingIgnoreCase(String name);
-
-    /**
-     * Find developers by country (case-insensitive).
-     *
-     * @param country the country name
-     * @return a list of developers from the specified country
-     */
-    List<Developer> findByCountryIgnoreCase(String country);
-
-    /**
-     * Find developers founded in a specific year.
-     *
-     * @param year the foundation year
-     * @return a list of developers founded in the specified year
-     */
-    List<Developer> findByFoundationYear(Integer year);
-
-    /**
-     * Find developers founded after a specific year.
-     *
-     * @param year the foundation year
-     * @return a list of developers founded after the specified year
-     */
-    List<Developer> findByFoundationYearGreaterThan(Integer year);
-
-    /**
-     * Find developers founded before a specific year.
-     *
-     * @param year the foundation year
-     * @return a list of developers founded before the specified year
-     */
-    List<Developer> findByFoundationYearLessThan(Integer year);
-
-    /**
-     * Find developers founded between two years.
-     *
-     * @param startYear the start year
-     * @param endYear the end year
-     * @return a list of developers founded between the specified years
-     */
-    List<Developer> findByFoundationYearBetween(Integer startYear, Integer endYear);
-
-    /**
-     * Find developers by country and foundation year.
-     *
-     * @param country the country name
-     * @param year the foundation year
-     * @return a list of developers from the specified country founded in the specified year
-     */
-    List<Developer> findByCountryIgnoreCaseAndFoundationYear(String country, Integer year);
-
-    /**
-     * Find developers by country and foundation year range.
-     *
-     * @param country the country name
-     * @param startYear the start year
-     * @param endYear the end year
-     * @return a list of developers from the specified country founded within the year range
-     */
-    List<Developer> findByCountryIgnoreCaseAndFoundationYearBetween(String country, Integer startYear, Integer endYear);
-
-    /**
-     * Find developers sorted by foundation year (ascending).
-     *
-     * @return a list of developers sorted by foundation year (oldest first)
-     */
-    List<Developer> findAllByOrderByFoundationYearAsc();
-
-    /**
-     * Find developers sorted by foundation year (descending).
-     *
-     * @return a list of developers sorted by foundation year (newest first)
-     */
-    List<Developer> findAllByOrderByFoundationYearDesc();
-
-    /**
-     * Find developers sorted by name (alphabetically).
-     *
-     * @return a list of developers sorted by name
-     */
-    List<Developer> findAllByOrderByNameAsc();
-
-    /**
-     * Find developers by country sorted by foundation year.
-     *
-     * @param country the country name
-     * @return a list of developers from the specified country sorted by foundation year
-     */
-    List<Developer> findByCountryIgnoreCaseOrderByFoundationYearAsc(String country);
 
     /**
      * Count developers by country.

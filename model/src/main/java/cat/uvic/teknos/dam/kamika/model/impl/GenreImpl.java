@@ -1,18 +1,26 @@
-package cat.uvic.teknos.dam.kamika.model.impl;
+package cat.uvic.teknos.dam.kamika.repositories.impl;
 
-import cat.uvic.teknos.dam.kamika.model.Genre;
+import cat.uvic.teknos.dam.kamika.repositories.Genre;
+import cat.uvic.teknos.dam.kamika.repositories.Game;
 
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 /**
- * Implementación concreta de la interfaz Genre.
- * Representa un género de videojuego (por ejemplo: acción, aventura, rol...).
+ * Concrete implementation of the Genre interface.
+ * Represents a video game genre (e.g., action, adventure, RPG...).
+ * <p>
+ * This class avoids circular references in toString() to prevent infinite loops
+ * when printing related entities like Game.
+ * </p>
  */
 public class GenreImpl implements Genre {
 
     private int id;
     private String name;
     private String description;
+    private Set<Game> games = new HashSet<>();
 
     @Override
     public int getId() {
@@ -44,15 +52,27 @@ public class GenreImpl implements Genre {
         this.description = description;
     }
 
+    @Override
+    public Set<Game> getGames() {
+        return games;
+    }
+
+    @Override
+    public void setGames(Set<Game> games) {
+        this.games = games;
+    }
+
     /**
-     * Compara este objeto con otro para ver si son iguales.
+     * Compares this object with another to check equality.
+     * Two genres are considered equal if they have the same ID, name, and description.
+     *
+     * @param o the object to compare
+     * @return true if objects are equal, false otherwise
      */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Genre)) return false;
-
-        Genre genre = (Genre) o;
+        if (!(o instanceof Genre genre)) return false;
 
         return getId() == genre.getId() &&
                 Objects.equals(getName(), genre.getName()) &&
@@ -60,7 +80,9 @@ public class GenreImpl implements Genre {
     }
 
     /**
-     * Genera un código hash único basado en los atributos principales.
+     * Generates a unique hash code based on the main attributes.
+     *
+     * @return the hash code for this object
      */
     @Override
     public int hashCode() {
@@ -68,7 +90,10 @@ public class GenreImpl implements Genre {
     }
 
     /**
-     * Representación textual del objeto, útil para debugging.
+     * String representation of the object, useful for debugging.
+     * Does not include related collections or entities to avoid infinite recursion.
+     *
+     * @return a string containing key fields only
      */
     @Override
     public String toString() {

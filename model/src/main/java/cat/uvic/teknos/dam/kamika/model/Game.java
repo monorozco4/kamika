@@ -1,8 +1,20 @@
-package cat.uvic.teknos.dam.kamika.model;
+package cat.uvic.teknos.dam.kamika.repositories;
 
 import java.time.LocalDate;
 import java.util.Set;
 
+/**
+ * Interface representing a video game.
+ * Defines the basic properties and behaviors of a game entity.
+ * <p>
+ * Related tables:
+ * - GENRE: Many-to-many relationship.
+ * - CONSOLE: Many-to-many relationship
+ * - GAMEEDITION: One-to-many relationship.
+ * - DEVELOPER: Many-to-one relationship (game belongs to one developer).
+ * - PUBLISHER: Many-to-one relationship (game is published by one publisher).
+ * </p>
+ */
 public interface Game {
     int getId();
     void setId(int id);

@@ -1,5 +1,13 @@
-package cat.uvic.teknos.dam.kamika.model;
+package cat.uvic.teknos.dam.kamika.repositories;
 
+/**
+ * Interface representing a video game console.
+ * Defines the basic properties and behaviors of a console entity.
+ * <p>
+ * Related tables:
+ * - Many-to-many relationship with Game.
+ * </p>
+ */
 public interface Console {
     int getId();
     void setId(int id);
