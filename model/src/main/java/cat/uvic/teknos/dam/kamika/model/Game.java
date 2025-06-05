@@ -1,4 +1,4 @@
-package cat.uvic.teknos.dam.kamika.repositories;
+package cat.uvic.teknos.dam.kamika.model;
 
 import java.time.LocalDate;
 import java.util.Set;
@@ -16,6 +16,7 @@ import java.util.Set;
  * </p>
  */
 public interface Game {
+
     int getId();
     void setId(int id);
 

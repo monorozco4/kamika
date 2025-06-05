@@ -1,6 +1,6 @@
 package cat.uvic.teknos.dam.kamika.repositories.jdbc.model;
 
-import cat.uvic.teknos.dam.kamika.repositories.Developer;
+import cat.uvic.teknos.dam.kamika.model.Developer;
 
 public interface JdbcPublisher {
     int getId();

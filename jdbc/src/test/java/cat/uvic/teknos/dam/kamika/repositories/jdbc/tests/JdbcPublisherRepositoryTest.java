@@ -1,7 +1,7 @@
 package cat.uvic.teknos.dam.kamika.repositories.jdbc.tests;
 
-import cat.uvic.teknos.dam.kamika.repositories.Publisher;
-import cat.uvic.teknos.dam.kamika.repositories.impl.PublisherImpl;
+import cat.uvic.teknos.dam.kamika.model.Publisher;
+import cat.uvic.teknos.dam.kamika.model.impl.PublisherImpl;
 import cat.uvic.teknos.dam.kamika.repositories.jdbc.JdbcPublisherRepository;
 import cat.uvic.teknos.dam.kamika.repositories.jdbc.datasources.DataSource;
 import cat.uvic.teknos.dam.kamika.repositories.jdbc.datasources.SingleConnectionDataSource;

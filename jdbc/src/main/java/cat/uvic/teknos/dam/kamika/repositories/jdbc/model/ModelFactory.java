@@ -1,20 +1,20 @@
 package cat.uvic.teknos.dam.kamika.repositories.jdbc.model;
 
-import cat.uvic.teknos.dam.kamika.repositories.Console;
-import cat.uvic.teknos.dam.kamika.repositories.Developer;
-import cat.uvic.teknos.dam.kamika.repositories.Game;
-import cat.uvic.teknos.dam.kamika.repositories.Publisher;
-import cat.uvic.teknos.dam.kamika.repositories.Genre;
-import cat.uvic.teknos.dam.kamika.repositories.GameEdition;
-import cat.uvic.teknos.dam.kamika.repositories.GameConsole;
+import cat.uvic.teknos.dam.kamika.model.Console;
+import cat.uvic.teknos.dam.kamika.model.Developer;
+import cat.uvic.teknos.dam.kamika.model.Game;
+import cat.uvic.teknos.dam.kamika.model.Publisher;
+import cat.uvic.teknos.dam.kamika.model.Genre;
+import cat.uvic.teknos.dam.kamika.model.GameEdition;
+import cat.uvic.teknos.dam.kamika.model.GameConsole;
 
-import cat.uvic.teknos.dam.kamika.repositories.impl.ConsoleImpl;
-import cat.uvic.teknos.dam.kamika.repositories.impl.DeveloperImpl;
-import cat.uvic.teknos.dam.kamika.repositories.impl.GameImpl;
-import cat.uvic.teknos.dam.kamika.repositories.impl.PublisherImpl;
-import cat.uvic.teknos.dam.kamika.repositories.impl.GenreImpl;
-import cat.uvic.teknos.dam.kamika.repositories.impl.GameEditionImpl;
-import cat.uvic.teknos.dam.kamika.repositories.impl.GameConsoleImpl;
+import cat.uvic.teknos.dam.kamika.model.impl.ConsoleImpl;
+import cat.uvic.teknos.dam.kamika.model.impl.DeveloperImpl;
+import cat.uvic.teknos.dam.kamika.model.impl.GameImpl;
+import cat.uvic.teknos.dam.kamika.model.impl.PublisherImpl;
+import cat.uvic.teknos.dam.kamika.model.impl.GenreImpl;
+import cat.uvic.teknos.dam.kamika.model.impl.GameEditionImpl;
+import cat.uvic.teknos.dam.kamika.model.impl.GameConsoleImpl;
 
 /**
  * Factory class responsible for creating model entity instances.

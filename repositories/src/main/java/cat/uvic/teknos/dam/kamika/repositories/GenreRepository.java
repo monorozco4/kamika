@@ -2,7 +2,6 @@ package cat.uvic.teknos.dam.kamika.repositories;
 
 import cat.uvic.teknos.dam.kamika.model.Genre;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -18,13 +17,6 @@ public interface GenreRepository {
      * @return an Optional containing the genre if found, empty otherwise
      */
     Optional<Genre> findById(int id);
-
-    /**
-     * Retrieve all genres.
-     *
-     * @return a list of all genres
-     */
-    List<Genre> findAll();
 
     /**
      * Save a new genre or update an existing one.
@@ -73,54 +65,6 @@ public interface GenreRepository {
      * @return an Optional containing the genre if found, empty otherwise
      */
     Optional<Genre> findByNameIgnoreCase(String name);
-
-    /**
-     * Find genres by name (partial match, case-insensitive).
-     *
-     * @param name the name fragment to search for
-     * @return a list of genres containing the specified name fragment
-     */
-    List<Genre> findByNameContainingIgnoreCase(String name);
-
-    /**
-     * Find genres by description (partial match, case-insensitive).
-     *
-     * @param description the description fragment to search for
-     * @return a list of genres containing the specified description fragment
-     */
-    List<Genre> findByDescriptionContainingIgnoreCase(String description);
-
-    /**
-     * Find genres sorted by name (alphabetically).
-     *
-     * @return a list of genres sorted by name
-     */
-    List<Genre> findAllByOrderByNameAsc();
-
-    /**
-     * Find genres that have associated games.
-     * This might need a custom implementation depending on the ORM/framework used.
-     *
-     * @return a list of genres that have at least one associated game
-     */
-    List<Genre> findGenresWithGames();
-
-    /**
-     * Find genres that don't have any associated games.
-     * This might need a custom implementation depending on the ORM/framework used.
-     *
-     * @return a list of genres that don't have any associated games
-     */
-    List<Genre> findGenresWithoutGames();
-
-    /**
-     * Find genres with a specified number of associated games or more.
-     * This might need a custom implementation depending on the ORM/framework used.
-     *
-     * @param count the minimum number of associated games
-     * @return a list of genres with at least the specified number of associated games
-     */
-    List<Genre> findGenresWithGameCountGreaterThanEqual(int count);
 
     /**
      * Count the number of games associated with each genre.

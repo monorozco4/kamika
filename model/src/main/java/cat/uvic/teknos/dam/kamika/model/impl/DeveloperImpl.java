@@ -1,6 +1,6 @@
-package cat.uvic.teknos.dam.kamika.repositories.impl;
+package cat.uvic.teknos.dam.kamika.model.impl;
 
-import cat.uvic.teknos.dam.kamika.repositories.Developer;
+import cat.uvic.teknos.dam.kamika.model.Developer;
 import java.util.Objects;
 
 /**

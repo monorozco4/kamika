@@ -1,4 +1,4 @@
-package cat.uvic.teknos.dam.kamika.repositories;
+package cat.uvic.teknos.dam.kamika.model;
 
 /**
  * Interface representing a video game console.
@@ -9,6 +9,7 @@ package cat.uvic.teknos.dam.kamika.repositories;
  * </p>
  */
 public interface Console {
+
     int getId();
     void setId(int id);
 

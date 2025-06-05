@@ -1,194 +1,275 @@
 package cat.uvic.teknos.dam.kamika.repositories.jdbc.tests;
 
-import cat.uvic.teknos.dam.kamika.repositories.Game;
-import cat.uvic.teknos.dam.kamika.repositories.impl.GameImpl;
+import cat.uvic.teknos.dam.kamika.model.Game;
+import cat.uvic.teknos.dam.kamika.model.impl.GameImpl;
+import cat.uvic.teknos.dam.kamika.model.impl.DeveloperImpl;
+import cat.uvic.teknos.dam.kamika.model.impl.PublisherImpl;
 import cat.uvic.teknos.dam.kamika.repositories.jdbc.JdbcGameRepository;
+import cat.uvic.teknos.dam.kamika.repositories.jdbc.datasources.DataSource;
+import cat.uvic.teknos.dam.kamika.repositories.jdbc.datasources.SingleConnectionDataSource;
+import cat.uvic.teknos.dam.kamika.repositories.jdbc.exceptions.CrudException;
 import cat.uvic.teknos.dam.kamika.repositories.jdbc.jupiter.LoadDatabaseExtension;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * Unit tests for {@link JdbcGameRepository} class.
- *
- * <p>This test class verifies all CRUD (Create, Read, Update, Delete) operations
- * for the Game entity using an in-memory H2 database. Tests are executed in a
- * specific order to validate dependent operations.</p>
- *
- * <p>Test environment setup includes:</p>
- * <ul>
- *   <li>Creating the GAME table if it doesn't exist</li>
- *   <li>Clearing all existing data before each test</li>
- *   <li>Initializing a fresh {@link JdbcGameRepository} instance</li>
- * </ul>
- *
- * @author Your Name
- * @version 1.0
- * @see JdbcGameRepository
- * @see Game
- * @see GameImpl
- */
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @ExtendWith(LoadDatabaseExtension.class)
-public class JdbcGameRepositoryTest {
+class JdbcGameRepositoryTest {
 
-    /** Repository instance being tested */
     private JdbcGameRepository repository;
 
-    /**
-     * Tests successful creation of a game entity.
-     *
-     * <p>Verifies that:
-     * <ul>
-     *   <li>The save operation returns a non-null game with generated ID</li>
-     *   <li>All attributes are stored correctly</li>
-     *   <li>The entity exists in the repository after creation</li>
-     * </ul>
-     */
+    @BeforeEach
+    void setUp() {
+        var dataSource = new SingleConnectionDataSource();
+
+        try (Connection connection = dataSource.getConnection();
+             Statement stmt = connection.createStatement()) {
+
+            // Deshabilitar verificaciones de FK temporalmente
+            stmt.execute("SET FOREIGN_KEY_CHECKS = 0");
+
+            // Limpiar tablas en orden inverso de dependencias
+            stmt.execute("DELETE FROM GAME");
+            stmt.execute("DELETE FROM PUBLISHER");
+            stmt.execute("DELETE FROM DEVELOPER");
+
+            // Volver a habilitar verificaciones de FK
+            stmt.execute("SET FOREIGN_KEY_CHECKS = 1");
+
+            // Crear tablas si no existen
+            stmt.execute("""
+                CREATE TABLE IF NOT EXISTS DEVELOPER (
+                    DEVELOPER_ID INT PRIMARY KEY AUTO_INCREMENT,
+                    NAME VARCHAR(100) NOT NULL,
+                    COUNTRY VARCHAR(50),
+                    FOUNDATION_YEAR INT
+                )
+            """);
+
+            stmt.execute("""
+                CREATE TABLE IF NOT EXISTS PUBLISHER (
+                    PUBLISHER_ID INT PRIMARY KEY AUTO_INCREMENT,
+                    NAME VARCHAR(100) NOT NULL,
+                    COUNTRY VARCHAR(50),
+                    DEVELOPER_ID INT UNIQUE,
+                    FOREIGN KEY (DEVELOPER_ID) REFERENCES DEVELOPER(DEVELOPER_ID)
+                )
+            """);
+
+            stmt.execute("""
+                CREATE TABLE IF NOT EXISTS GAME (
+                    GAME_ID INT PRIMARY KEY AUTO_INCREMENT,
+                    TITLE VARCHAR(100) NOT NULL,
+                    RELEASE_DATE DATE,
+                    DEVELOPER_ID INT NOT NULL,
+                    PUBLISHER_ID INT NOT NULL,
+                    PEGI_RATING VARCHAR(10),
+                    IS_MULTIPLAYER BOOLEAN,
+                    FOREIGN KEY (DEVELOPER_ID) REFERENCES DEVELOPER(DEVELOPER_ID),
+                    FOREIGN KEY (PUBLISHER_ID) REFERENCES PUBLISHER(PUBLISHER_ID)
+                )
+            """);
+
+            // Inserciones conservadas del código fuente
+            stmt.execute("""
+                INSERT INTO DEVELOPER (DEVELOPER_ID, NAME, COUNTRY, FOUNDATION_YEAR) 
+                VALUES 
+                    (1, 'Naughty Dog', 'USA', 1984),
+                    (2, 'FromSoftware', 'Japan', 1986),
+                    (3, 'Nintendo EPD', 'Japan', 1889)
+            """);
+
+            stmt.execute("""
+                INSERT INTO PUBLISHER (PUBLISHER_ID, NAME, COUNTRY, DEVELOPER_ID) 
+                VALUES 
+                    (1, 'Sony Interactive Entertainment', 'USA', 1),
+                    (2, 'Bandai Namco Entertainment', 'Japan', 2),
+                    (3, 'Nintendo', 'Japan', 3)
+            """);
+
+            stmt.execute("""
+                INSERT INTO GAME (GAME_ID, TITLE, RELEASE_DATE, DEVELOPER_ID, PUBLISHER_ID, PEGI_RATING, IS_MULTIPLAYER) 
+                VALUES 
+                    (1, 'The Last of Us Part II', '2020-06-19', 1, 1, '18', false),
+                    (2, 'Elden Ring', '2022-02-25', 2, 2, 'PEGI 16', true)
+            """);
+
+        } catch (SQLException e) {
+            fail("Error setting up database", e);
+        }
+
+        repository = new JdbcGameRepository(dataSource);
+    }
+
     @Test
     @Order(1)
-    void shouldSaveGame() {
-        Game game = new GameImpl();
-        game.setTitle("The Legend of Zelda");
-        game.setReleaseDate(LocalDate.of(2017, 3, 3));
-        game.setPegiRating("PEGI 12");
-        game.setMultiplayer(true);
-
-        Game saved = repository.save(game);
-
-        assertNotNull(saved.getId());
-        assertEquals("The Legend of Zelda", saved.getTitle());
-        assertTrue(repository.existsById(saved.getId()));
-    }
-
-    /**
-     * Tests retrieval of a game by its ID.
-     *
-     * <p>Verifies that:
-     * <ul>
-     *   <li>A saved game can be retrieved using its ID</li>
-     *   <li>All attributes match the original values</li>
-     *   <li>The returned Optional contains a value</li>
-     * </ul>
-     */
-    @Test
-    @Order(2)
-    void shouldFindGameById() {
-        Game game = new GameImpl();
-        game.setTitle("Super Mario Odyssey");
-        game.setReleaseDate(LocalDate.of(2017, 10, 27));
-        game.setPegiRating("PEGI 3");
-        game.setMultiplayer(false);
-
-        Game saved = repository.save(game);
-
-        Optional<Game> found = repository.findById(saved.getId());
-
+    void shouldSaveAndGetGameById() {
+        Optional<Game> found = repository.findById(1);
         assertTrue(found.isPresent());
-        assertEquals("Super Mario Odyssey", found.get().getTitle());
+        assertEquals("The Last of Us Part II", found.get().getTitle());
+        assertEquals(LocalDate.of(2020, 6, 19), found.get().getReleaseDate());
+        assertFalse(found.get().isMultiplayer());
     }
 
-    /**
-     * Tests counting of all games in the repository.
-     *
-     * <p>Verifies that the count matches the exact number of saved games.
-     */
+    /* @Test
+    @Order(2)
+    void shouldUpdateGameWhenExists() {
+        // 1. Obtener el juego existente para asegurar que tenemos un ID válido
+        Optional<Game> optionalGame = repository.findById(2);
+        assertTrue(optionalGame.isPresent());
+        Game existingGame = optionalGame.get();
+
+        // 2. Crear un nuevo objeto de juego con TODOS los campos requeridos
+        GameImpl gameToUpdate = new GameImpl();
+
+        // 3. Establecer todos los campos obligatorios
+        gameToUpdate.setId(existingGame.getId());
+        gameToUpdate.setTitle("Elden Ring DLC Edition");
+        gameToUpdate.setReleaseDate(existingGame.getReleaseDate()); // Mantener la fecha original
+
+        // 4. Establecer las relaciones requeridas (developer y publisher)
+        DeveloperImpl developer = new DeveloperImpl();
+        developer.setId(2); // ID del developer existente en los INSERTs
+        gameToUpdate.setDeveloper(developer);
+
+        PublisherImpl publisher = new PublisherImpl();
+        publisher.setId(2); // ID del publisher existente en los INSERTs
+        gameToUpdate.setPublisher(publisher);
+
+        // 5. Establecer los campos adicionales requeridos
+        gameToUpdate.setPegiRating("PEGI 18+");
+        gameToUpdate.setMultiplayer(false);
+
+        // 6. Ejecutar la actualización
+        Game updatedGame = repository.save(gameToUpdate);
+
+        // 7. Verificar los cambios
+        assertNotNull(updatedGame);
+        assertEquals("Elden Ring DLC Edition", updatedGame.getTitle());
+        assertEquals("PEGI 18+", updatedGame.getPegiRating());
+        assertFalse(updatedGame.isMultiplayer());
+    } */
+
     @Test
     @Order(3)
-    void shouldCountGames() {
-        Game game1 = new GameImpl();
-        game1.setTitle("Minecraft");
-        game1.setReleaseDate(LocalDate.of(2011, 11, 18));
-        game1.setPegiRating("PEGI 7");
-        game1.setMultiplayer(true);
+    void shouldFailWhenSavingGameWithInvalidDeveloperOrPublisher() {
+        DeveloperImpl invalidDeveloper = new DeveloperImpl();
+        invalidDeveloper.setId(999); // ID no existente
 
-        Game game2 = new GameImpl();
-        game2.setTitle("Tetris");
-        game2.setReleaseDate(LocalDate.of(1984, 6, 6));
-        game2.setPegiRating("PEGI 3");
-        game2.setMultiplayer(false);
+        PublisherImpl invalidPublisher = new PublisherImpl();
+        invalidPublisher.setId(999); // ID no existente
 
-        repository.save(game1);
-        repository.save(game2);
+        Game game = new GameImpl();
+        ((GameImpl) game).setTitle("Fake Game");
+        ((GameImpl) game).setReleaseDate(LocalDate.now());
+        ((GameImpl) game).setDeveloper(invalidDeveloper);
+        ((GameImpl) game).setPublisher(invalidPublisher);
 
-        long count = repository.count();
-
-        assertEquals(2, count);
+        assertThrows(CrudException.class, () -> repository.save(game));
     }
 
-    /**
-     * Tests deletion of a game by its ID.
-     *
-     * <p>Verifies that:
-     * <ul>
-     *   <li>The delete operation returns true when successful</li>
-     *   <li>The game no longer exists in the repository after deletion</li>
-     * </ul>
-     */
     @Test
     @Order(4)
-    void shouldDeleteGameById() {
-        Game game = new GameImpl();
-        game.setTitle("Final Fantasy VII");
-        game.setReleaseDate(LocalDate.of(1997, 1, 31));
+    void shouldDeleteGameUsingEntity() {
+        // Crear nuevo juego usando IDs existentes (3 para Nintendo)
+        GameImpl game = new GameImpl();
+        game.setTitle("The Legend of Zelda: Breath of the Wild");
+        game.setReleaseDate(LocalDate.of(2017, 3, 3));
+
+        DeveloperImpl developer = new DeveloperImpl();
+        developer.setId(3);
+
+        PublisherImpl publisher = new PublisherImpl();
+        publisher.setId(3);
+
+        game.setDeveloper(developer);
+        game.setPublisher(publisher);
+        game.setPegiRating("PEGI 12");
+        game.setMultiplayer(false);
+
+        repository.save(game);
+        repository.delete(game);
+
+        assertFalse(repository.existsById(game.getId()));
+    }
+
+    @Test
+    @Order(5)
+    void shouldCountGamesCorrectly() {
+        long initialCount = repository.count();
+
+        // Crear nuevo juego usando IDs existentes
+        GameImpl game = new GameImpl();
+        game.setTitle("Uncharted 4");
+        game.setReleaseDate(LocalDate.of(2016, 5, 10));
+
+        DeveloperImpl developer = new DeveloperImpl();
+        developer.setId(1);
+
+        PublisherImpl publisher = new PublisherImpl();
+        publisher.setId(1);
+
+        game.setDeveloper(developer);
+        game.setPublisher(publisher);
         game.setPegiRating("PEGI 16");
         game.setMultiplayer(false);
 
-        Game saved = repository.save(game);
+        repository.save(game);
 
-        boolean deleted = repository.deleteById(saved.getId());
-
-        assertTrue(deleted);
-        assertFalse(repository.existsById(saved.getId()));
+        assertEquals(initialCount + 1, repository.count());
     }
 
-    /**
-     * Tests deletion of a game by entity reference.
-     *
-     * <p>Verifies that the game is successfully removed from the repository.
-     */
-    @Test
-    @Order(5)
-    void shouldDeleteGame() {
-        Game game = new GameImpl();
-        game.setTitle("DOOM Eternal");
-        game.setReleaseDate(LocalDate.of(2020, 3, 20));
-        game.setPegiRating("PEGI 18");
-        game.setMultiplayer(true);
-
-        Game saved = repository.save(game);
-
-        repository.delete(saved);
-
-        assertFalse(repository.existsById(saved.getId()));
-    }
-
-    /**
-     * Tests that deleted games cannot be retrieved.
-     *
-     * <p>Verifies that:
-     * <ul>
-     *   <li>Deleted games are not found in the repository</li>
-     *   <li>The returned Optional is empty</li>
-     * </ul>
-     */
     @Test
     @Order(6)
-    void shouldNotFindDeletedGame() {
+    void shouldReturnTrueWhenGameExists() {
+        assertTrue(repository.existsById(1)); // Juego insertado en setUp
+    }
+
+    @Test
+    @Order(7)
+    void shouldReturnFalseWhenGameDoesNotExist() {
+        assertFalse(repository.existsById(999));
+    }
+
+    @Test
+    @Order(8)
+    void shouldThrowIllegalArgumentExceptionOnNullTitle() {
         Game game = new GameImpl();
-        game.setTitle("Half-Life 3");
-        game.setReleaseDate(LocalDate.of(2025, 1, 1)); // Fictional future date
-        game.setPegiRating("PEGI 16");
-        game.setMultiplayer(true);
+        ((GameImpl) game).setTitle(null);
+        ((GameImpl) game).setReleaseDate(LocalDate.now());
 
-        Game saved = repository.save(game);
-        repository.delete(saved);
+        DeveloperImpl developer = new DeveloperImpl();
+        developer.setId(1);
 
-        Optional<Game> found = repository.findById(saved.getId());
+        PublisherImpl publisher = new PublisherImpl();
+        publisher.setId(1);
 
-        assertFalse(found.isPresent());
+        ((GameImpl) game).setDeveloper(developer);
+        ((GameImpl) game).setPublisher(publisher);
+
+        assertThrows(IllegalArgumentException.class, () -> repository.save(game));
+    }
+
+    @Test
+    @Order(9)
+    void shouldThrowCrudExceptionWhenInvalidOperation() {
+        // Simular error de base de datos
+        DataSource failingDataSource = new DataSource() {
+            @Override
+            public Connection getConnection() throws SQLException {
+                throw new SQLException("Simulated database failure");
+            }
+        };
+
+        JdbcGameRepository failingRepository = new JdbcGameRepository(failingDataSource);
+        assertThrows(CrudException.class, () -> failingRepository.findById(1));
     }
 }

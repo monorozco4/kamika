@@ -1,14 +1,18 @@
 package cat.uvic.teknos.dam.kamika.repositories.jdbc.tests;
 
-import cat.uvic.teknos.dam.kamika.repositories.Console;
-import cat.uvic.teknos.dam.kamika.repositories.impl.ConsoleImpl;
+import cat.uvic.teknos.dam.kamika.model.Console;
+import cat.uvic.teknos.dam.kamika.model.impl.ConsoleImpl;
 import cat.uvic.teknos.dam.kamika.repositories.jdbc.JdbcConsoleRepository;
+import cat.uvic.teknos.dam.kamika.repositories.jdbc.datasources.SingleConnectionDataSource;
 import cat.uvic.teknos.dam.kamika.repositories.jdbc.exceptions.CrudException;
+
+import java.sql.Connection;
+import java.sql.Statement;
 
 import java.util.Optional;
 
-
 import cat.uvic.teknos.dam.kamika.repositories.jdbc.jupiter.LoadDatabaseExtension;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -31,6 +35,38 @@ import static org.junit.jupiter.api.Assertions.*;
 class JdbcConsoleRepositoryTest {
 
     private JdbcConsoleRepository consoleRepository;
+
+    /**
+     * Sets up the test environment before each test method is executed.
+     *
+     * <p>Creates or clears the CONSOLE table and initializes a new repository instance.</p>
+     */
+    @BeforeEach
+    void setUp() {
+        var dataSource = new SingleConnectionDataSource();
+
+        try (Connection connection = dataSource.getConnection();
+             Statement stmt = connection.createStatement()) {
+
+            // Create table if it doesn't exist
+            stmt.execute("""
+                CREATE TABLE IF NOT EXISTS CONSOLE (
+                    ID INT PRIMARY KEY AUTO_INCREMENT,
+                    NAME VARCHAR(255) NOT NULL,
+                    MANUFACTURER VARCHAR(255),
+                    RELEASEYEAR INT
+                )
+            """);
+
+            // Clear table before each test
+            stmt.execute("DELETE FROM CONSOLE");
+
+        } catch (Exception e) {
+            fail("Error cleaning up database before test", e);
+        }
+
+        consoleRepository = new JdbcConsoleRepository(dataSource);
+    }
 
     /**
      * Tests that a newly saved console can be retrieved by its ID.

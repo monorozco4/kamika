@@ -1,4 +1,4 @@
-package cat.uvic.teknos.dam.kamika.repositories;
+package cat.uvic.teknos.dam.kamika.model;
 
 import java.time.LocalDate;
 

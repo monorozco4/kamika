@@ -1,4 +1,4 @@
-package cat.uvic.teknos.dam.kamika.repositories;
+package cat.uvic.teknos.dam.kamika.model;
 
 /**
  * Interface representing a specific edition of a game.
@@ -10,6 +10,7 @@ package cat.uvic.teknos.dam.kamika.repositories;
  */
 
 public interface GameEdition {
+
     Game getGame();
     void setGame(Game game);
 

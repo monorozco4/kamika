@@ -1,4 +1,4 @@
--- Sample data for VideoGames database
+-- Use the test database
 
 USE VideoGames_Test;
 
@@ -16,7 +16,7 @@ INSERT INTO DEVELOPER (NAME, COUNTRY, FOUNDATION_YEAR) VALUES
                                                            ('Square Enix', 'Japan', 2003),
                                                            ('Capcom', 'Japan', 1979);
 
--- Insert publishers (PUBLISHER) with 1:1 relationship
+-- Insert publishers (PUBLISHER)
 
 INSERT INTO PUBLISHER (NAME, COUNTRY, DEVELOPER_ID) VALUES
                                                         ('Sony Interactive Entertainment', 'USA', 1),
@@ -67,7 +67,7 @@ INSERT INTO GAME (TITLE, RELEASE_DATE, DEVELOPER_ID, PUBLISHER_ID, PEGI_RATING, 
                                                                                                     ('Elden Ring', '2022-02-25', 4, 4, '16', 1),
                                                                                                     ('Grand Theft Auto V', '2013-09-17', 5, 5, '18', 1),
                                                                                                     ('God of War: Ragnarök', '2022-11-09', 6, 6, '18', 0),
-                                                                                                    ('Marvel''s Spider-Man: Miles Morales', '2020-11-12', 7, 6, '16', 0),
+                                                                                                    ('Marvel''s Spider-Man: Miles Morales', '2020-11-12', 7, 7, '16', 0),
                                                                                                     ('Assassin''s Creed Valhalla', '2020-11-10', 8, 8, '18', 1),
                                                                                                     ('Final Fantasy VII Remake', '2020-04-10', 9, 9, '16', 0),
                                                                                                     ('Resident Evil Village', '2021-05-07', 10, 10, '18', 0);
@@ -86,24 +86,10 @@ INSERT INTO GAME_EDITION (GAME_ID, EDITION_NAME, SPECIAL_CONTENT, PRICE) VALUES
                                                                              (9, 'Deluxe Edition', 'Soundtrack, concept art', 79.99),
                                                                              (10, 'Collector''s Edition', 'Lady Dimitrescu statue, artbook', 219.99);
 
--- Insert game-genre relationships (GAME_GENRE)
-
-INSERT INTO GAME_GENRE (GAME_ID, GENRE_ID) VALUES
-                                               (1, 1), (1, 4),  -- The Last of Us Part II: Action-Adventure, Open World
-                                               (2, 2), (2, 4),  -- Cyberpunk 2077: RPG, Open World
-                                               (3, 1), (3, 4),  -- Zelda: Action-Adventure, Open World
-                                               (4, 2), (4, 1),  -- Elden Ring: RPG, Action-Adventure
-                                               (5, 1), (5, 4),  -- GTA V: Action-Adventure, Open World
-                                               (6, 1),          -- God of War: Action-Adventure
-                                               (7, 1), (7, 4),  -- Spider-Man: Action-Adventure, Open World
-                                               (8, 1), (8, 4),  -- AC Valhalla: Action-Adventure, Open World
-                                               (9, 1), (9, 2),  -- FFVII Remake: Action-Adventure, RPG
-                                               (10, 1), (10, 3); -- Resident Evil: Action-Adventure, Horror
-
 -- Insert game-console relationships (GAME_CONSOLE)
 
 INSERT INTO GAME_CONSOLE (GAME_ID, CONSOLE_ID, RELEASE_DATE, IS_EXCLUSIVE, RESOLUTION) VALUES
-                                                                                           (1, 1, '2020-06-19', 1, '4K/30fps'),  -- TLOU2 PS5 (exclusive)
+                                                                                           (1, 1, '2020-06-19', 1, '4K/30fps'),  -- The Last of Us PS5 (exclusive)
                                                                                            (2, 1, '2020-12-10', 0, '4K/30fps'),  -- Cyberpunk PS5
                                                                                            (2, 2, '2020-12-10', 0, '4K/30fps'),  -- Cyberpunk XSX
                                                                                            (2, 4, '2020-12-10', 0, '4K/60fps'),  -- Cyberpunk PC

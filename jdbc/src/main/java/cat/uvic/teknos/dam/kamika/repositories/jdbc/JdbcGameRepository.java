@@ -1,83 +1,145 @@
 package cat.uvic.teknos.dam.kamika.repositories.jdbc;
 
-import cat.uvic.teknos.dam.kamika.repositories.Game;
+import cat.uvic.teknos.dam.kamika.model.Game;
 import cat.uvic.teknos.dam.kamika.repositories.GameRepository;
-import cat.uvic.teknos.dam.kamika.repositories.impl.GameImpl;
+import cat.uvic.teknos.dam.kamika.model.impl.GameImpl;
 import cat.uvic.teknos.dam.kamika.repositories.jdbc.datasources.DataSource;
 import cat.uvic.teknos.dam.kamika.repositories.jdbc.exceptions.CrudException;
 
 import java.sql.*;
-import java.time.LocalDate;
+import java.sql.Date;
 import java.util.*;
 
-/**
- * JDBC implementation of the GameRepository interface.
- * Follows best practices for connection handling and exception management.
- */
 public class JdbcGameRepository implements GameRepository {
 
     private final DataSource dataSource;
 
     public JdbcGameRepository(DataSource dataSource) {
-        this.dataSource = Objects.requireNonNull(dataSource);
+        this.dataSource = dataSource;
     }
 
     @Override
     public Optional<Game> findById(int id) {
-        String sql = "SELECT * FROM GAME WHERE ID = ?";
+        String sql = "SELECT * FROM GAME WHERE GAME_ID = ?";
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, id);
+
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     return Optional.of(mapToEntity(rs));
                 }
             }
+
         } catch (SQLException e) {
-            throw new CrudException("Error finding game by ID", e);
+            throw new CrudException("Error retrieving game by ID", e);
         }
+
         return Optional.empty();
     }
 
     @Override
     public Game save(Game game) {
-        String sql = "INSERT INTO GAME (TITLE, RELEASEDATE, PEGIRATING, MULTIPLAYER) VALUES (?, ?, ?, ?)";
+        if (!(game instanceof GameImpl)) {
+            throw new IllegalArgumentException("Only GameImpl can be saved");
+        }
+
+        // Validación mejorada con mensajes claros
+        if (game.getTitle() == null || game.getTitle().trim().isEmpty()) {
+            throw new IllegalArgumentException("Game title is required");
+        }
+        if (game.getReleaseDate() == null) {
+            throw new IllegalArgumentException("Release date is required");
+        }
+        if (game.getDeveloper() == null || game.getDeveloper().getId() <= 0) {
+            throw new IllegalArgumentException("Valid developer is required");
+        }
+        if (game.getPublisher() == null || game.getPublisher().getId() <= 0) {
+            throw new IllegalArgumentException("Valid publisher is required");
+        }
+        if (game.getPegiRating() == null || game.getPegiRating().trim().isEmpty()) {
+            throw new IllegalArgumentException("PEGI rating is required");
+        }
+
+        if (existsById(game.getId())) {
+            update((GameImpl) game);
+        } else {
+            insert((GameImpl) game);
+        }
+        return game;
+    }
+
+    private void insert(GameImpl game) throws CrudException {
+        String sql = "INSERT INTO GAME (TITLE, RELEASE_DATE, DEVELOPER_ID, PUBLISHER_ID, PEGI_RATING, IS_MULTIPLAYER) VALUES (?, ?, ?, ?, ?, ?)";
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             stmt.setString(1, game.getTitle());
             stmt.setObject(2, game.getReleaseDate());
-            stmt.setString(3, game.getPegiRating());
-            stmt.setBoolean(4, game.isMultiplayer());
+            stmt.setInt(3, game.getDeveloper().getId());
+            stmt.setInt(4, game.getPublisher().getId());
+            stmt.setString(5, game.getPegiRating());
+            stmt.setBoolean(6, game.isMultiplayer());
 
             int affectedRows = stmt.executeUpdate();
 
             if (affectedRows == 0) {
-                throw new CrudException("Failed to insert game, no rows affected.");
+                throw new CrudException("Insert failed: no rows affected.");
             }
 
             try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
                     game.setId(generatedKeys.getInt(1));
+                } else {
+                    throw new CrudException("Failed to get generated game ID");
                 }
             }
 
-            return game;
+        } catch (SQLException e) {
+            throw new CrudException("Error inserting game", e);
+        }
+    }
+
+    private void update(GameImpl game) throws CrudException {
+        String sql = "UPDATE GAME SET TITLE = ?, RELEASE_DATE = ?, DEVELOPER_ID = ?, PUBLISHER_ID = ?, PEGI_RATING = ?, IS_MULTIPLAYER = ? WHERE GAME_ID = ?";
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, game.getTitle());
+            stmt.setObject(2, game.getReleaseDate());
+            stmt.setInt(3, game.getDeveloper().getId());
+            stmt.setInt(4, game.getPublisher().getId());
+            stmt.setString(5, game.getPegiRating());
+            stmt.setBoolean(6, game.isMultiplayer());
+            stmt.setInt(7, game.getId());
+
+            int affectedRows = stmt.executeUpdate();
+            if (affectedRows == 0) {
+                throw new CrudException("Update failed: no rows affected");
+            }
 
         } catch (SQLException e) {
-            throw new CrudException("Error saving game", e);
+            throw new CrudException("Error updating game", e);
         }
     }
 
     @Override
     public void delete(Game game) {
-        String sql = "DELETE FROM GAME WHERE ID = ?";
+        if (game == null || game.getId() <= 0) {
+            throw new IllegalArgumentException("Invalid game ID");
+        }
+
+        String sql = "DELETE FROM GAME WHERE GAME_ID = ?";
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, game.getId());
-            stmt.executeUpdate();
+            int affectedRows = stmt.executeUpdate();
+
+            if (affectedRows == 0) {
+                throw new CrudException("Delete failed: no rows affected");
+            }
 
         } catch (SQLException e) {
             throw new CrudException("Error deleting game", e);
@@ -86,13 +148,13 @@ public class JdbcGameRepository implements GameRepository {
 
     @Override
     public boolean deleteById(int id) {
-        String sql = "DELETE FROM GAME WHERE ID = ?";
+        String sql = "DELETE FROM GAME WHERE GAME_ID = ?";
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, id);
-            int rowsAffected = stmt.executeUpdate();
-            return rowsAffected > 0;
+            int affectedRows = stmt.executeUpdate();
+            return affectedRows > 0;
 
         } catch (SQLException e) {
             throw new CrudException("Error deleting game by ID", e);
@@ -113,46 +175,37 @@ public class JdbcGameRepository implements GameRepository {
         } catch (SQLException e) {
             throw new CrudException("Error counting games", e);
         }
+
         return 0;
     }
 
     @Override
     public boolean existsById(int id) {
-        String sql = "SELECT 1 FROM GAME WHERE ID = ?";
+        String sql = "SELECT 1 FROM GAME WHERE GAME_ID = ?";
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, id);
+
             try (ResultSet rs = stmt.executeQuery()) {
                 return rs.next();
             }
 
         } catch (SQLException e) {
-            throw new CrudException("Error checking if game exists", e);
+            throw new CrudException("Error checking game existence", e);
         }
     }
 
-    /**
-     * Maps a ResultSet row to a Game entity.
-     *
-     * @param rs the result set to map
-     * @return the mapped Game object
-     * @throws SQLException if a database access error occurs
-     */
     private Game mapToEntity(ResultSet rs) throws SQLException {
-        Game game = new GameImpl();
-        game.setId(rs.getInt("ID"));
+        GameImpl game = new GameImpl();
+        game.setId(rs.getInt("GAME_ID"));
         game.setTitle(rs.getString("TITLE"));
 
-        // ✅ Conversión segura de java.sql.Date a java.time.LocalDate
-        game.setReleaseDate(rs.getDate("RELEASEDATE").toLocalDate());
+        Date releaseDate = rs.getDate("RELEASE_DATE");
+        game.setReleaseDate(releaseDate != null ? releaseDate.toLocalDate() : null);
 
-        game.setPegiRating(rs.getString("PEGIRATING"));
-
-        // Si isMultiplayer() es solo getter, puedes hacer esto si usas GameImpl
-        if (game instanceof GameImpl) {
-            ((GameImpl) game).setMultiplayer(rs.getBoolean("MULTIPLAYER"));
-        }
+        game.setPegiRating(rs.getString("PEGI_RATING"));
+        game.setMultiplayer(rs.getBoolean("IS_MULTIPLAYER"));
 
         return game;
     }

@@ -1,8 +1,8 @@
 package cat.uvic.teknos.dam.kamika.repositories.jdbc;
 
-import cat.uvic.teknos.dam.kamika.repositories.Developer;
+import cat.uvic.teknos.dam.kamika.model.Developer;
 import cat.uvic.teknos.dam.kamika.repositories.DeveloperRepository;
-import cat.uvic.teknos.dam.kamika.repositories.impl.DeveloperImpl;
+import cat.uvic.teknos.dam.kamika.model.impl.DeveloperImpl;
 import cat.uvic.teknos.dam.kamika.repositories.jdbc.datasources.DataSource;
 import cat.uvic.teknos.dam.kamika.repositories.jdbc.exceptions.CrudException;
 
@@ -18,7 +18,7 @@ public class JdbcDeveloperRepository implements DeveloperRepository {
     private final DataSource dataSource;
 
     public JdbcDeveloperRepository(DataSource dataSource) {
-        this.dataSource = Objects.requireNonNull(dataSource);
+        this.dataSource = dataSource;
     }
 
     @Override
@@ -59,7 +59,7 @@ public class JdbcDeveloperRepository implements DeveloperRepository {
     }
 
     private Developer insert(Developer developer) {
-        String sql = "INSERT INTO DEVELOPER (NAME, COUNTRY, FOUNDATIONYEAR) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO DEVELOPER (NAME, COUNTRY, FOUNDATION_YEAR) VALUES (?, ?, ?)";
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
@@ -87,7 +87,7 @@ public class JdbcDeveloperRepository implements DeveloperRepository {
     }
 
     private Developer update(Developer developer) {
-        String sql = "UPDATE DEVELOPER SET NAME = ?, COUNTRY = ?, FOUNDATIONYEAR = ? WHERE ID = ?";
+        String sql = "UPDATE DEVELOPER SET NAME = ?, COUNTRY = ?, FOUNDATION_YEAR = ? WHERE ID = ?";
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -202,7 +202,7 @@ public class JdbcDeveloperRepository implements DeveloperRepository {
         developer.setId(rs.getInt("ID"));
         developer.setName(rs.getString("NAME"));
         developer.setCountry(rs.getString("COUNTRY"));
-        developer.setFoundationYear(rs.getObject("FOUNDATIONYEAR", Integer.class));
+        developer.setFoundationYear(rs.getObject("FOUNDATION_YEAR", Integer.class));
         return developer;
     }
 }

@@ -5,7 +5,7 @@ package cat.uvic.teknos.dam.kamika.repositories.jdbc.model;
  * Defines the basic properties and behaviors of a console entity.
  * <p>
  * Related tables:
- * - RELEASEDON: Many-to-many relationship with Game.
+ * - Many-to-many relationship with Game.
  * </p>
  */
 public interface JdbcConsole {

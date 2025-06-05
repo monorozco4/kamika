@@ -12,7 +12,7 @@ public interface DataSource {
      * Returns a database connection.
      * @return an active database connection
      */
-    Connection getConnection();
+    Connection getConnection() throws SQLException;
 
     /**
      * Closes any resources held by this data source, such as open connections or pools.

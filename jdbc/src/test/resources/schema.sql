@@ -1,11 +1,9 @@
--- Schema VideoGames
-
+-- Schema VideoGames_Test
 DROP DATABASE IF EXISTS VideoGames_Test;
 CREATE DATABASE VideoGames_Test;
 USE VideoGames_Test;
 
 -- Table DEVELOPER
-
 CREATE TABLE IF NOT EXISTS DEVELOPER (
                                          DEVELOPER_ID INT NOT NULL AUTO_INCREMENT,
                                          NAME VARCHAR(100) NOT NULL,
@@ -15,7 +13,6 @@ CREATE TABLE IF NOT EXISTS DEVELOPER (
     );
 
 -- Table PUBLISHER
-
 CREATE TABLE IF NOT EXISTS PUBLISHER (
                                          PUBLISHER_ID INT NOT NULL AUTO_INCREMENT,
                                          NAME VARCHAR(100) NOT NULL,
@@ -28,7 +25,6 @@ CREATE TABLE IF NOT EXISTS PUBLISHER (
     );
 
 -- Table GENRE
-
 CREATE TABLE IF NOT EXISTS GENRE (
                                      GENRE_ID INT NOT NULL AUTO_INCREMENT,
                                      NAME VARCHAR(50) NOT NULL,
@@ -37,7 +33,6 @@ CREATE TABLE IF NOT EXISTS GENRE (
     );
 
 -- Table CONSOLE
-
 CREATE TABLE IF NOT EXISTS CONSOLE (
                                        CONSOLE_ID INT NOT NULL AUTO_INCREMENT,
                                        NAME VARCHAR(100) NOT NULL,
@@ -47,7 +42,6 @@ CREATE TABLE IF NOT EXISTS CONSOLE (
     );
 
 -- Table GAME
-
 CREATE TABLE IF NOT EXISTS GAME (
                                     GAME_ID INT NOT NULL AUTO_INCREMENT,
                                     TITLE VARCHAR(100) NOT NULL,
@@ -65,36 +59,19 @@ CREATE TABLE IF NOT EXISTS GAME (
     REFERENCES PUBLISHER (PUBLISHER_ID)
     );
 
--- Table GAME_EDITION (con PRICE modificado)
-
+-- Table GAME_EDITION
 CREATE TABLE IF NOT EXISTS GAME_EDITION (
                                             GAME_ID INT NOT NULL,
                                             EDITION_NAME VARCHAR(100) NOT NULL,
     SPECIAL_CONTENT VARCHAR(100),
-    PRICE DECIMAL(6,2),  -- Cambiado a 6 dígitos máximo
-    PRIMARY KEY (GAME_ID),
+    PRICE DECIMAL(6,2),
+    PRIMARY KEY (GAME_ID, EDITION_NAME),
     CONSTRAINT FK_GAME_EDITION_GAME
     FOREIGN KEY (GAME_ID)
     REFERENCES GAME (GAME_ID)
     );
 
-
--- Table GAME_GENRE
-
-CREATE TABLE IF NOT EXISTS GAME_GENRE (
-                                          GAME_ID INT NOT NULL,
-                                          GENRE_ID INT NOT NULL,
-                                          PRIMARY KEY (GAME_ID, GENRE_ID),
-    CONSTRAINT FK_GAME_GENRE_GAME
-    FOREIGN KEY (GAME_ID)
-    REFERENCES GAME (GAME_ID),
-    CONSTRAINT FK_GAME_GENRE_GENRE
-    FOREIGN KEY (GENRE_ID)
-    REFERENCES GENRE (GENRE_ID)
-    );
-
 -- Table GAME_CONSOLE
-
 CREATE TABLE IF NOT EXISTS GAME_CONSOLE (
                                             GAME_ID INT NOT NULL,
                                             CONSOLE_ID INT NOT NULL,

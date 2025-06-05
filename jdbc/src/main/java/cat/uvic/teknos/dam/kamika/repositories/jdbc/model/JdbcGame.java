@@ -1,6 +1,6 @@
 package cat.uvic.teknos.dam.kamika.repositories.jdbc.model;
 
-import cat.uvic.teknos.dam.kamika.repositories.*;
+import cat.uvic.teknos.dam.kamika.model.*;
 
 import java.time.LocalDate;
 import java.util.Set;

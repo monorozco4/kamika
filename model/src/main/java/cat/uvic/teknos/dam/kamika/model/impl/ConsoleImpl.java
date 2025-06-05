@@ -1,6 +1,6 @@
-package cat.uvic.teknos.dam.kamika.repositories.impl;
+package cat.uvic.teknos.dam.kamika.model.impl;
 
-import cat.uvic.teknos.dam.kamika.repositories.Console;
+import cat.uvic.teknos.dam.kamika.model.Console;
 import java.util.Objects;
 
 /**
@@ -16,7 +16,7 @@ public class ConsoleImpl implements Console {
     private int id;
     private String name;
     private String manufacturer;
-    private Integer releaseYear;
+    private int releaseYear;
 
     @Override
     public int getId() {

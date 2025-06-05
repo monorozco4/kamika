@@ -1,17 +1,20 @@
 package cat.uvic.teknos.dam.kamika.repositories.jdbc.tests;
 
-import cat.uvic.teknos.dam.kamika.repositories.Developer;
-import cat.uvic.teknos.dam.kamika.repositories.impl.DeveloperImpl;
+import cat.uvic.teknos.dam.kamika.model.Developer;
+import cat.uvic.teknos.dam.kamika.model.impl.DeveloperImpl;
 import cat.uvic.teknos.dam.kamika.repositories.jdbc.JdbcDeveloperRepository;
+import cat.uvic.teknos.dam.kamika.repositories.jdbc.datasources.SingleConnectionDataSource;
 import cat.uvic.teknos.dam.kamika.repositories.jdbc.exceptions.CrudException;
-
-import cat.uvic.teknos.dam.kamika.repositories.jdbc.jupiter.LoadDatabaseExtension;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.sql.Connection;
 import java.sql.Statement;
+
 import java.util.Optional;
+
+import cat.uvic.teknos.dam.kamika.repositories.jdbc.jupiter.LoadDatabaseExtension;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -40,6 +43,33 @@ class JdbcDeveloperRepositoryTest {
 
     /** The repository instance being tested */
     private JdbcDeveloperRepository developerRepository;
+
+    @BeforeEach
+    void setUp() {
+        var dataSource = new SingleConnectionDataSource();
+
+        try (Connection connection = dataSource.getConnection();
+             Statement stmt = connection.createStatement()) {
+
+            // Create table if it doesn't exist
+            stmt.execute("""
+            CREATE TABLE IF NOT EXISTS DEVELOPER (
+                ID INT PRIMARY KEY AUTO_INCREMENT,
+                NAME VARCHAR(255) NOT NULL,
+                COUNTRY VARCHAR(255),
+                FOUNDATION_YEAR INT
+            )
+        """);
+
+            // Clear table before each test
+            stmt.execute("DELETE FROM DEVELOPER");
+
+        } catch (Exception e) {
+            fail("Error cleaning up database before test", e);
+        }
+
+        developerRepository = new JdbcDeveloperRepository(dataSource);
+    }
 
     /**
      * Tests that a developer can be successfully saved and retrieved by ID.

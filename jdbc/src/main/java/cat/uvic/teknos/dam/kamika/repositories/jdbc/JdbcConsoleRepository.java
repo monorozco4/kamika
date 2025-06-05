@@ -1,8 +1,8 @@
 package cat.uvic.teknos.dam.kamika.repositories.jdbc;
 
-import cat.uvic.teknos.dam.kamika.repositories.Console;
+import cat.uvic.teknos.dam.kamika.model.Console;
 import cat.uvic.teknos.dam.kamika.repositories.ConsoleRepository;
-import cat.uvic.teknos.dam.kamika.repositories.impl.ConsoleImpl;
+import cat.uvic.teknos.dam.kamika.model.impl.ConsoleImpl;
 import cat.uvic.teknos.dam.kamika.repositories.jdbc.datasources.DataSource;
 import cat.uvic.teknos.dam.kamika.repositories.jdbc.exceptions.CrudException;
 
@@ -18,7 +18,7 @@ public class JdbcConsoleRepository implements ConsoleRepository {
     private final DataSource dataSource;
 
     public JdbcConsoleRepository(DataSource dataSource) {
-        this.dataSource = Objects.requireNonNull(dataSource);
+        this.dataSource = dataSource;
     }
 
     @Override

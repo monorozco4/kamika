@@ -1,42 +1,31 @@
 package cat.uvic.teknos.dam.kamika.repositories.jdbc;
 
-import cat.uvic.teknos.dam.kamika.repositories.GameEdition;
+import cat.uvic.teknos.dam.kamika.model.GameEdition;
 import cat.uvic.teknos.dam.kamika.repositories.GameEditionRepository;
-import cat.uvic.teknos.dam.kamika.repositories.impl.GameEditionImpl;
-import cat.uvic.teknos.dam.kamika.repositories.impl.GameImpl;
-import cat.uvic.teknos.dam.kamika.repositories.jdbc.exceptions.CrudException;
+import cat.uvic.teknos.dam.kamika.model.impl.GameEditionImpl;
+import cat.uvic.teknos.dam.kamika.model.impl.GameImpl;
 import cat.uvic.teknos.dam.kamika.repositories.jdbc.datasources.DataSource;
+import cat.uvic.teknos.dam.kamika.repositories.jdbc.exceptions.CrudException;
 
 import java.sql.*;
-import java.util.*;
+import java.util.Objects;
+import java.util.Optional;
 
-/**
- * JDBC implementation of the GameEdition repository.
- * Follows best practices for connection handling and exception management.
- */
 public class JdbcGameEditionRepository implements GameEditionRepository {
 
     private final DataSource dataSource;
 
-    /**
-     * Constructs a new repository using the provided data source.
-     *
-     * @param dataSource the data source to use for database connections
-     */
     public JdbcGameEditionRepository(DataSource dataSource) {
         this.dataSource = Objects.requireNonNull(dataSource);
     }
 
-    /**
-     * Finds a game edition by its composite key: gameId and editionName.
-     *
-     * @param gameId      the ID of the game
-     * @param editionName the name of the edition
-     * @return an Optional containing the game edition if found, empty otherwise
-     */
     @Override
     public Optional<GameEdition> findByGameIdAndEditionName(int gameId, String editionName) {
-        String sql = "SELECT * FROM GAMEEDITION WHERE GAMEID = ? AND EDITIONNAME = ?";
+        if (gameId <= 0 || editionName == null || editionName.isBlank()) {
+            throw new CrudException("Invalid parameters for finding game edition");
+        }
+
+        String sql = "SELECT * FROM GAME_EDITION WHERE GAME_ID = ? AND EDITION_NAME = ?";
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -48,25 +37,33 @@ public class JdbcGameEditionRepository implements GameEditionRepository {
                     return Optional.of(mapToEntity(rs));
                 }
             }
+
         } catch (SQLException e) {
-            throw new CrudException("Error finding game edition by ID and name", e);
+            // ✅ Encapsulamos SQLException en CrudException
+            throw new CrudException("Error retrieving game edition", e);
         }
+
         return Optional.empty();
     }
 
-    /**
-     * Saves or updates a game edition in the database.
-     *
-     * @param gameEdition the edition to save
-     * @return the saved game edition
-     */
     @Override
     public GameEdition save(GameEdition gameEdition) {
-        if (gameEdition.getGame() == null || gameEdition.getEditionName() == null || gameEdition.getEditionName().trim().isEmpty()) {
-            throw new IllegalArgumentException("Game and edition name must not be null or empty");
+        if (gameEdition == null) {
+            throw new IllegalArgumentException("GameEdition cannot be null");
         }
 
-        if (!existsByGameIdAndEditionName(gameEdition.getGame().getId(), gameEdition.getEditionName())) {
+        if (gameEdition.getGame() == null || gameEdition.getGame().getId() <= 0) {
+            throw new IllegalArgumentException("Game must exist and have a valid ID");
+        }
+
+        if (gameEdition.getEditionName() == null || gameEdition.getEditionName().trim().isEmpty()) {
+            throw new IllegalArgumentException("Edition name must not be null or empty");
+        }
+
+        int gameId = gameEdition.getGame().getId();
+        String editionName = gameEdition.getEditionName();
+
+        if (!existsByGameIdAndEditionName(gameId, editionName)) {
             insert(gameEdition);
         } else {
             update(gameEdition);
@@ -76,9 +73,9 @@ public class JdbcGameEditionRepository implements GameEditionRepository {
     }
 
     private void insert(GameEdition gameEdition) {
-        String sql = "INSERT INTO GAMEEDITION (GAMEID, EDITIONNAME, SPECIALCONTENT, PRICE) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO GAME_EDITION (GAME_ID, EDITION_NAME, SPECIAL_CONTENT, PRICE) VALUES (?, ?, ?, ?)";
         try (Connection conn = dataSource.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, gameEdition.getGame().getId());
             stmt.setString(2, gameEdition.getEditionName());
@@ -86,18 +83,18 @@ public class JdbcGameEditionRepository implements GameEditionRepository {
             stmt.setDouble(4, gameEdition.getPrice());
 
             int affectedRows = stmt.executeUpdate();
-
             if (affectedRows == 0) {
-                throw new CrudException("Failed to insert game edition, no rows affected.");
+                throw new CrudException("Insert failed: no rows affected.");
             }
 
         } catch (SQLException e) {
+            // ✅ Ahora todos los errores se convierten en CrudException
             throw new CrudException("Error inserting game edition", e);
         }
     }
 
     private void update(GameEdition gameEdition) {
-        String sql = "UPDATE GAMEEDITION SET SPECIALCONTENT = ?, PRICE = ? WHERE GAMEID = ? AND EDITIONNAME = ?";
+        String sql = "UPDATE GAME_EDITION SET SPECIAL_CONTENT = ?, PRICE = ? WHERE GAME_ID = ? AND EDITION_NAME = ?";
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -108,74 +105,47 @@ public class JdbcGameEditionRepository implements GameEditionRepository {
 
             int affectedRows = stmt.executeUpdate();
             if (affectedRows == 0) {
-                throw new CrudException("Error updating game edition: no rows affected");
+                throw new CrudException("Update failed: no rows affected.");
             }
 
         } catch (SQLException e) {
+            // ✅ Todos los errores SQL se encapsulan en CrudException
             throw new CrudException("Error updating game edition", e);
         }
     }
 
-    /**
-     * Deletes a game edition from the database.
-     *
-     * @param gameEdition the edition to delete
-     */
     @Override
     public void delete(GameEdition gameEdition) {
-        if (gameEdition.getGame() == null || gameEdition.getEditionName() == null) {
-            throw new IllegalArgumentException("Game and edition name must not be null");
+        if (gameEdition == null || gameEdition.getGame() == null || gameEdition.getEditionName() == null) {
+            throw new CrudException("Game edition data is invalid");
         }
 
-        String sql = "DELETE FROM GAMEEDITION WHERE GAMEID = ? AND EDITIONNAME = ?";
-        try (Connection conn = dataSource.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        int gameId = gameEdition.getGame().getId();
+        String editionName = gameEdition.getEditionName();
 
-            stmt.setInt(1, gameEdition.getGame().getId());
-            stmt.setString(2, gameEdition.getEditionName());
-
-            int affectedRows = stmt.executeUpdate();
-            if (affectedRows == 0) {
-                throw new CrudException("Error deleting game edition: no rows affected");
-            }
-
-        } catch (SQLException e) {
-            throw new CrudException("Error deleting game edition", e);
-        }
+        deleteByGameIdAndEditionName(gameId, editionName);
     }
 
-    /**
-     * Deletes a game edition by game ID and edition name.
-     *
-     * @param gameId      the ID of the game
-     * @param editionName the name of the edition
-     * @return true if the edition was deleted, false if it did not exist
-     */
     @Override
     public boolean deleteByGameIdAndEditionName(int gameId, String editionName) {
-        String sql = "DELETE FROM GAMEEDITION WHERE GAMEID = ? AND EDITIONNAME = ?";
+        String sql = "DELETE FROM GAME_EDITION WHERE GAME_ID = ? AND EDITION_NAME = ?";
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, gameId);
             stmt.setString(2, editionName);
 
-            int affectedRows = stmt.executeUpdate();
-            return affectedRows > 0;
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0;
 
         } catch (SQLException e) {
-            throw new CrudException("Error deleting game edition by game ID and edition name", e);
+            throw new CrudException("Error deleting game edition by composite key", e);
         }
     }
 
-    /**
-     * Counts how many game editions exist in the database.
-     *
-     * @return the total number of game editions
-     */
     @Override
     public long count() {
-        String sql = "SELECT COUNT(*) FROM GAMEEDITION";
+        String sql = "SELECT COUNT(*) FROM GAME_EDITION";
         try (Connection conn = dataSource.getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
@@ -187,19 +157,13 @@ public class JdbcGameEditionRepository implements GameEditionRepository {
         } catch (SQLException e) {
             throw new CrudException("Error counting game editions", e);
         }
+
         return 0;
     }
 
-    /**
-     * Checks whether a game edition exists by game ID and edition name.
-     *
-     * @param gameId      the ID of the game
-     * @param editionName the name of the edition
-     * @return true if the edition exists, false otherwise
-     */
     @Override
     public boolean existsByGameIdAndEditionName(int gameId, String editionName) {
-        String sql = "SELECT 1 FROM GAMEEDITION WHERE GAMEID = ? AND EDITIONNAME = ?";
+        String sql = "SELECT 1 FROM GAME_EDITION WHERE GAME_ID = ? AND EDITION_NAME = ?";
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -215,19 +179,16 @@ public class JdbcGameEditionRepository implements GameEditionRepository {
         }
     }
 
-    /**
-     * Maps a ResultSet row to a GameEdition entity.
-     *
-     * @param rs the result set to map
-     * @return the mapped GameEdition object
-     * @throws SQLException if a database access error occurs
-     */
     private GameEdition mapToEntity(ResultSet rs) throws SQLException {
         GameEdition edition = new GameEditionImpl();
-        edition.setGame(new GameImpl());
-        edition.getGame().setId(rs.getInt("GAMEID"));
-        edition.setEditionName(rs.getString("EDITIONNAME"));
-        edition.setSpecialContent(rs.getString("SPECIALCONTENT"));
+
+        // Simulamos un Game solo con ID
+        GameImpl game = new GameImpl();
+        game.setId(rs.getInt("GAME_ID"));
+
+        edition.setGame(game);
+        edition.setEditionName(rs.getString("EDITION_NAME"));
+        edition.setSpecialContent(rs.getString("SPECIAL_CONTENT"));
         edition.setPrice(rs.getDouble("PRICE"));
 
         return edition;

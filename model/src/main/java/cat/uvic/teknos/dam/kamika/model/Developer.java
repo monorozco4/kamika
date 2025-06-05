@@ -1,4 +1,4 @@
-package cat.uvic.teknos.dam.kamika.repositories;
+package cat.uvic.teknos.dam.kamika.model;
 
 /**
  * Interface representing a video game developer.
@@ -10,6 +10,7 @@ package cat.uvic.teknos.dam.kamika.repositories;
  * </p>
  */
 public interface Developer {
+
     int getId();
     void setId(int id);
 

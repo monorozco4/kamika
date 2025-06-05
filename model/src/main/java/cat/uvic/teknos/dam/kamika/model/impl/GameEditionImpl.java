@@ -1,7 +1,7 @@
-package cat.uvic.teknos.dam.kamika.repositories.impl;
+package cat.uvic.teknos.dam.kamika.model.impl;
 
-import cat.uvic.teknos.dam.kamika.repositories.Game;
-import cat.uvic.teknos.dam.kamika.repositories.GameEdition;
+import cat.uvic.teknos.dam.kamika.model.Game;
+import cat.uvic.teknos.dam.kamika.model.GameEdition;
 
 import java.util.Objects;
 

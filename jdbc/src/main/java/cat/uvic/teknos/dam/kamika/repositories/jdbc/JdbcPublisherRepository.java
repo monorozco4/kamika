@@ -1,8 +1,8 @@
 package cat.uvic.teknos.dam.kamika.repositories.jdbc;
 
-import cat.uvic.teknos.dam.kamika.repositories.Publisher;
+import cat.uvic.teknos.dam.kamika.model.Publisher;
 import cat.uvic.teknos.dam.kamika.repositories.PublisherRepository;
-import cat.uvic.teknos.dam.kamika.repositories.impl.PublisherImpl;
+import cat.uvic.teknos.dam.kamika.model.impl.PublisherImpl;
 import cat.uvic.teknos.dam.kamika.repositories.jdbc.datasources.DataSource;
 import cat.uvic.teknos.dam.kamika.repositories.jdbc.exceptions.CrudException;
 

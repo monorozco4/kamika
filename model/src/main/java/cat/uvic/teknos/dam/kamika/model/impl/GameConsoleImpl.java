@@ -1,8 +1,8 @@
-package cat.uvic.teknos.dam.kamika.repositories.impl;
+package cat.uvic.teknos.dam.kamika.model.impl;
 
-import cat.uvic.teknos.dam.kamika.repositories.Game;
-import cat.uvic.teknos.dam.kamika.repositories.Console;
-import cat.uvic.teknos.dam.kamika.repositories.GameConsole;
+import cat.uvic.teknos.dam.kamika.model.Game;
+import cat.uvic.teknos.dam.kamika.model.Console;
+import cat.uvic.teknos.dam.kamika.model.GameConsole;
 
 import java.time.LocalDate;
 import java.util.Objects;

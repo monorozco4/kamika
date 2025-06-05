@@ -1,6 +1,6 @@
 package cat.uvic.teknos.dam.kamika.repositories.jdbc.model;
 
-import cat.uvic.teknos.dam.kamika.repositories.Game;
+import cat.uvic.teknos.dam.kamika.model.Game;
 
 public interface JdbcGameEdition {
     Game getGame();
