@@ -9,10 +9,6 @@ import cat.uvic.teknos.dam.kamika.repositories.jdbc.exceptions.CrudException;
 import java.sql.*;
 import java.util.*;
 
-/**
- * JDBC implementation of the Publisher repository.
- * Follows best practices for connection handling and exception management.
- */
 public class JdbcPublisherRepository implements PublisherRepository {
 
     private final DataSource dataSource;
@@ -23,7 +19,10 @@ public class JdbcPublisherRepository implements PublisherRepository {
 
     @Override
     public Optional<Publisher> findById(int id) {
-        String sql = "SELECT * FROM PUBLISHER WHERE ID = ?";
+        if (id <= 0) {
+            throw new CrudException("Invalid publisher ID: " + id);
+        }
+        String sql = "SELECT * FROM PUBLISHER WHERE PUBLISHER_ID = ?";
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -49,13 +48,12 @@ public class JdbcPublisherRepository implements PublisherRepository {
     }
 
     private Publisher insert(Publisher publisher) {
-        String sql = "INSERT INTO PUBLISHER (NAME, COUNTRY, DEVELOPERID) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO PUBLISHER (NAME, COUNTRY) VALUES (?, ?)";
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             stmt.setString(1, publisher.getName());
             stmt.setString(2, publisher.getCountry());
-            stmt.setObject(3, publisher.getDeveloper() != null ? publisher.getDeveloper().getId() : null);
 
             int affectedRows = stmt.executeUpdate();
 
@@ -77,14 +75,13 @@ public class JdbcPublisherRepository implements PublisherRepository {
     }
 
     private Publisher update(Publisher publisher) {
-        String sql = "UPDATE PUBLISHER SET NAME = ?, COUNTRY = ?, DEVELOPERID = ? WHERE ID = ?";
+        String sql = "UPDATE PUBLISHER SET NAME = ?, COUNTRY = ? WHERE PUBLISHER_ID = ?";
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, publisher.getName());
             stmt.setString(2, publisher.getCountry());
-            stmt.setObject(3, publisher.getDeveloper() != null ? publisher.getDeveloper().getId() : null);
-            stmt.setInt(4, publisher.getId());
+            stmt.setInt(3, publisher.getId());
 
             int affectedRows = stmt.executeUpdate();
             if (affectedRows == 0) {
@@ -100,7 +97,7 @@ public class JdbcPublisherRepository implements PublisherRepository {
 
     @Override
     public void delete(Publisher publisher) {
-        String sql = "DELETE FROM PUBLISHER WHERE ID = ?";
+        String sql = "DELETE FROM PUBLISHER WHERE PUBLISHER_ID = ?";
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -114,7 +111,7 @@ public class JdbcPublisherRepository implements PublisherRepository {
 
     @Override
     public boolean deleteById(int id) {
-        String sql = "DELETE FROM PUBLISHER WHERE ID = ?";
+        String sql = "DELETE FROM PUBLISHER WHERE PUBLISHER_ID = ?";
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -146,7 +143,7 @@ public class JdbcPublisherRepository implements PublisherRepository {
 
     @Override
     public boolean existsById(int id) {
-        String sql = "SELECT 1 FROM PUBLISHER WHERE ID = ?";
+        String sql = "SELECT 1 FROM PUBLISHER WHERE PUBLISHER_ID = ?";
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -179,26 +176,11 @@ public class JdbcPublisherRepository implements PublisherRepository {
         return 0;
     }
 
-    /**
-     * Maps a ResultSet row to a Publisher entity.
-     *
-     * @param rs the result set to map
-     * @return the mapped Publisher object
-     * @throws SQLException if a database access error occurs
-     */
     private Publisher mapToEntity(ResultSet rs) throws SQLException {
         Publisher publisher = new PublisherImpl();
-        publisher.setId(rs.getInt("ID"));
+        publisher.setId(rs.getInt("PUBLISHER_ID"));
         publisher.setName(rs.getString("NAME"));
         publisher.setCountry(rs.getString("COUNTRY"));
-
-        // Si hay relación directa con Developer (self-publishing)
-        Integer developerId = rs.getObject("DEVELOPERID", Integer.class);
-        if (developerId != null && developerId > 0) {
-            // Usaría JDBCPublisherRepository para cargarlo si es necesario
-            // Por ahora lo dejamos como solo ID
-        }
-
         return publisher;
     }
 }

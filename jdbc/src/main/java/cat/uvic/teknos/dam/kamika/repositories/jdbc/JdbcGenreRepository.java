@@ -29,7 +29,10 @@ public class JdbcGenreRepository implements GenreRepository {
      */
     @Override
     public Optional<Genre> findById(int id) {
-        String sql = "SELECT * FROM GENRE WHERE ID = ?";
+        if (id < 0) {
+            throw new CrudException("Invalid id: " + id);
+        }
+        String sql = "SELECT * FROM GENRE WHERE GENRE_ID = ?";
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -88,7 +91,7 @@ public class JdbcGenreRepository implements GenreRepository {
     }
 
     private Genre update(Genre genre) {
-        String sql = "UPDATE GENRE SET NAME = ?, DESCRIPTION = ? WHERE ID = ?";
+        String sql = "UPDATE GENRE SET NAME = ?, DESCRIPTION = ? WHERE GENRE_ID = ?";
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -115,7 +118,7 @@ public class JdbcGenreRepository implements GenreRepository {
      */
     @Override
     public void delete(Genre genre) {
-        String sql = "DELETE FROM GENRE WHERE ID = ?";
+        String sql = "DELETE FROM GENRE WHERE GENRE_ID = ?";
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -135,7 +138,7 @@ public class JdbcGenreRepository implements GenreRepository {
      */
     @Override
     public boolean deleteById(int id) {
-        String sql = "DELETE FROM GENRE WHERE ID = ?";
+        String sql = "DELETE FROM GENRE WHERE GENRE_ID = ?";
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -178,7 +181,7 @@ public class JdbcGenreRepository implements GenreRepository {
      */
     @Override
     public boolean existsById(int id) {
-        String sql = "SELECT 1 FROM GENRE WHERE ID = ?";
+        String sql = "SELECT 1 FROM GENRE WHERE GENRE_ID = ?";
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -227,7 +230,7 @@ public class JdbcGenreRepository implements GenreRepository {
     @Override
     public Map<Integer, Long> countGamesPerGenre() {
         Map<Integer, Long> result = new HashMap<>();
-        String sql = "SELECT GENREID, COUNT(GAMEID) AS GAME_COUNT FROM BELONGSTO GROUP BY GENREID";
+        String sql = "SELECT GENRE_ID, COUNT(*) AS GAME_COUNT FROM GAME GROUP BY GENRE_ID";
 
         try (Connection conn = dataSource.getConnection();
              Statement stmt = conn.createStatement();
@@ -255,7 +258,7 @@ public class JdbcGenreRepository implements GenreRepository {
      */
     private Genre mapToEntity(ResultSet rs) throws SQLException {
         Genre genre = new GenreImpl();
-        genre.setId(rs.getInt("ID"));
+        genre.setId(rs.getInt("GENRE_ID"));
         genre.setName(rs.getString("NAME"));
         genre.setDescription(rs.getString("DESCRIPTION"));
         return genre;

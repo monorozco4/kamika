@@ -27,7 +27,7 @@ public class JdbcDeveloperRepository implements DeveloperRepository {
             throw new CrudException("Invalid developer ID: " + id);
         }
 
-        String sql = "SELECT * FROM DEVELOPER WHERE ID = ?";
+        String sql = "SELECT * FROM DEVELOPER WHERE DEVELOPER_ID = ?";
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -87,7 +87,7 @@ public class JdbcDeveloperRepository implements DeveloperRepository {
     }
 
     private Developer update(Developer developer) {
-        String sql = "UPDATE DEVELOPER SET NAME = ?, COUNTRY = ?, FOUNDATION_YEAR = ? WHERE ID = ?";
+        String sql = "UPDATE DEVELOPER SET NAME = ?, COUNTRY = ?, FOUNDATION_YEAR = ? WHERE DEVELOPER_ID = ?";
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -110,7 +110,7 @@ public class JdbcDeveloperRepository implements DeveloperRepository {
 
     @Override
     public void delete(Developer developer) {
-        String sql = "DELETE FROM DEVELOPER WHERE ID = ?";
+        String sql = "DELETE FROM DEVELOPER WHERE DEVELOPER_ID = ?";
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -124,7 +124,7 @@ public class JdbcDeveloperRepository implements DeveloperRepository {
 
     @Override
     public boolean deleteById(int id) {
-        String sql = "DELETE FROM DEVELOPER WHERE ID = ?";
+        String sql = "DELETE FROM DEVELOPER WHERE DEVELOPER_ID = ?";
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -156,7 +156,7 @@ public class JdbcDeveloperRepository implements DeveloperRepository {
 
     @Override
     public boolean existsById(int id) {
-        String sql = "SELECT 1 FROM DEVELOPER WHERE ID = ?";
+        String sql = "SELECT 1 FROM DEVELOPER WHERE DEVELOPER_ID = ?";
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -199,7 +199,7 @@ public class JdbcDeveloperRepository implements DeveloperRepository {
      */
     private Developer mapToEntity(ResultSet rs) throws SQLException {
         Developer developer = new DeveloperImpl();
-        developer.setId(rs.getInt("ID"));
+        developer.setId(rs.getInt("DEVELOPER_ID"));
         developer.setName(rs.getString("NAME"));
         developer.setCountry(rs.getString("COUNTRY"));
         developer.setFoundationYear(rs.getObject("FOUNDATION_YEAR", Integer.class));

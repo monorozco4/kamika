@@ -19,6 +19,39 @@ public class JdbcGameConsoleRepository implements GameConsoleRepository {
     }
 
     @Override
+    public Optional<GameConsole> findByGameConsoleId(int gameConsoleId) {
+        String sql = "SELECT * FROM GAME_CONSOLE WHERE GAME_CONSOLE_ID = ?";
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, gameConsoleId);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return Optional.of(mapToEntity(rs));
+                }
+            }
+        } catch (SQLException e) {
+            throw new CrudException("Error buscando por GAME_CONSOLE_ID", e);
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public boolean deleteByGameConsoleId(int gameConsoleId) {
+        String sql = "DELETE FROM GAME_CONSOLE WHERE GAME_CONSOLE_ID = ?";
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, gameConsoleId);
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            throw new CrudException("Error eliminando por GAME_CONSOLE_ID", e);
+        }
+    }
+
+    @Override
     public Optional<GameConsole> findById(int gameId, int consoleId) {
         if (gameId <= 0 || consoleId <= 0) {
             throw new CrudException("Invalid composite ID: " + gameId + "/" + consoleId);
@@ -64,7 +97,7 @@ public class JdbcGameConsoleRepository implements GameConsoleRepository {
     private void insert(GameConsole gameConsole) {
         String sql = "INSERT INTO GAME_CONSOLE (GAME_ID, CONSOLE_ID, RELEASE_DATE, IS_EXCLUSIVE, RESOLUTION) VALUES (?, ?, ?, ?, ?)";
         try (Connection conn = dataSource.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             stmt.setInt(1, gameConsole.getGameId());
             stmt.setInt(2, gameConsole.getConsoleId());
@@ -76,6 +109,11 @@ public class JdbcGameConsoleRepository implements GameConsoleRepository {
             if (rowsAffected == 0)
                 throw new CrudException("Insert failed: no rows affected");
 
+            try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    gameConsole.setGameConsoleId(generatedKeys.getInt(1));
+                }
+            }
         } catch (SQLException e) {
             throw new CrudException("Error inserting game-console relation", e);
         }
@@ -163,14 +201,14 @@ public class JdbcGameConsoleRepository implements GameConsoleRepository {
     }
 
     private GameConsole mapToEntity(ResultSet rs) throws SQLException {
-        GameConsole entity = new GameConsoleImpl();
+        GameConsoleImpl entity = new GameConsoleImpl();
+        entity.setGameConsoleId(rs.getInt("GAME_CONSOLE_ID"));
         entity.setGameId(rs.getInt("GAME_ID"));
         entity.setConsoleId(rs.getInt("CONSOLE_ID"));
         Date date = rs.getDate("RELEASE_DATE");
         entity.setReleaseDate(date != null ? date.toLocalDate() : null);
         entity.setExclusive(rs.getBoolean("IS_EXCLUSIVE"));
         entity.setResolution(rs.getString("RESOLUTION"));
-
         return entity;
     }
 }

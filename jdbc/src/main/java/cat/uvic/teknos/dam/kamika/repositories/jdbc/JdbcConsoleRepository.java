@@ -27,7 +27,7 @@ public class JdbcConsoleRepository implements ConsoleRepository {
             throw new CrudException("Invalid console ID: " + id);
         }
 
-        String sql = "SELECT * FROM CONSOLE WHERE ID = ?";
+        String sql = "SELECT * FROM CONSOLE WHERE CONSOLE_ID = ?";
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -54,7 +54,7 @@ public class JdbcConsoleRepository implements ConsoleRepository {
     }
 
     private Console insert(Console console) {
-        String sql = "INSERT INTO CONSOLE (NAME, MANUFACTURER, RELEASEYEAR) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO CONSOLE (NAME, MANUFACTURER, RELEASE_YEAR) VALUES (?, ?, ?)";
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
@@ -82,7 +82,7 @@ public class JdbcConsoleRepository implements ConsoleRepository {
     }
 
     private Console update(Console console) {
-        String sql = "UPDATE CONSOLE SET NAME = ?, MANUFACTURER = ?, RELEASEYEAR = ? WHERE ID = ?";
+        String sql = "UPDATE CONSOLE SET NAME = ?, MANUFACTURER = ?, RELEASE_YEAR = ? WHERE CONSOLE_ID = ?";
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -105,7 +105,7 @@ public class JdbcConsoleRepository implements ConsoleRepository {
 
     @Override
     public void delete(Console console) {
-        String sql = "DELETE FROM CONSOLE WHERE ID = ?";
+        String sql = "DELETE FROM CONSOLE WHERE CONSOLE_ID = ?";
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -119,7 +119,7 @@ public class JdbcConsoleRepository implements ConsoleRepository {
 
     @Override
     public boolean deleteById(int id) {
-        String sql = "DELETE FROM CONSOLE WHERE ID = ?";
+        String sql = "DELETE FROM CONSOLE WHERE CONSOLE_ID = ?";
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -151,7 +151,7 @@ public class JdbcConsoleRepository implements ConsoleRepository {
 
     @Override
     public boolean existsById(int id) {
-        String sql = "SELECT 1 FROM CONSOLE WHERE ID = ?";
+        String sql = "SELECT 1 FROM CONSOLE WHERE CONSOLE_ID = ?";
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -174,11 +174,10 @@ public class JdbcConsoleRepository implements ConsoleRepository {
      */
     private Console mapToEntity(ResultSet rs) throws SQLException {
         Console console = new ConsoleImpl();
-        console.setId(rs.getInt("ID"));
+        console.setId(rs.getInt("CONSOLE_ID")); //
         console.setName(rs.getString("NAME"));
         console.setManufacturer(rs.getString("MANUFACTURER"));
-        console.setReleaseYear(rs.getObject("RELEASEYEAR", Integer.class));
-
+        console.setReleaseYear(rs.getObject("RELEASE_YEAR", Integer.class));
         return console;
     }
 }

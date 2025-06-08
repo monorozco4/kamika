@@ -127,7 +127,7 @@ public class JdbcGameEditionRepository implements GameEditionRepository {
     }
 
     @Override
-    public boolean deleteByGameIdAndEditionName(int gameId, String editionName) {
+    public void deleteByGameIdAndEditionName(int gameId, String editionName) {
         String sql = "DELETE FROM GAME_EDITION WHERE GAME_ID = ? AND EDITION_NAME = ?";
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -136,7 +136,6 @@ public class JdbcGameEditionRepository implements GameEditionRepository {
             stmt.setString(2, editionName);
 
             int rowsAffected = stmt.executeUpdate();
-            return rowsAffected > 0;
 
         } catch (SQLException e) {
             throw new CrudException("Error deleting game edition by composite key", e);
