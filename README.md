@@ -24,3 +24,4 @@ for new games you want to play! Search for new games to play and have fun with!
 | 1.0.2   | Interfaces added                 |
 | 1.0.3   | Repositories added               |
 | 1.0.4   | Models and implementations added |
+| 1.0.5   | JDBC added and tested            |
