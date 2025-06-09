@@ -7,7 +7,9 @@ import cat.uvic.teknos.dam.kamika.exceptions.CrudException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 public class JpaDeveloperRepository implements DeveloperRepository {
 
@@ -129,6 +131,14 @@ public class JpaDeveloperRepository implements DeveloperRepository {
                     Long.class);
             query.setParameter("country", country);
             return query.getSingleResult();
+        });
+    }
+
+    @Override
+    public Set<Developer> findAll() {
+        return JPAUtil.executeQuery(entityManager -> {
+            TypedQuery<JpaDeveloper> query = entityManager.createQuery("SELECT d FROM JpaDeveloper d", JpaDeveloper.class);
+            return new HashSet<>(query.getResultList());
         });
     }
 }

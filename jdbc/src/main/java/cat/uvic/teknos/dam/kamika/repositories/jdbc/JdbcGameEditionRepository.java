@@ -8,8 +8,10 @@ import cat.uvic.teknos.dam.kamika.repositories.jdbc.datasources.DataSource;
 import cat.uvic.teknos.dam.kamika.repositories.jdbc.exceptions.CrudException;
 
 import java.sql.*;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 public class JdbcGameEditionRepository implements GameEditionRepository {
 
@@ -115,6 +117,43 @@ public class JdbcGameEditionRepository implements GameEditionRepository {
     }
 
     @Override
+    public Optional<GameEdition> findById(int id) {
+        if (id <= 0) {
+            throw new CrudException("Invalid game edition ID: " + id);
+        }
+
+        String sql = "SELECT * FROM GAME_EDITION WHERE GAME_EDITION_ID = ?";
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, id);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return Optional.of(mapToEntity(rs));
+                }
+            }
+        } catch (SQLException e) {
+            throw new CrudException("Error finding game edition by ID", e);
+        }
+        return Optional.empty();
+    }
+
+    /**
+     * Maps a ResultSet row to a GameEdition entity.
+     *
+     * @param rs the result set to map
+     * @return the mapped GameEdition object
+     * @throws SQLException if a database access error occurs
+     */
+    private GameEdition mapToEntity(ResultSet rs) throws SQLException {
+        GameEdition gameEdition = new GameEditionImpl();
+        gameEdition.setId(rs.getInt("GAME_EDITION_ID"));
+        gameEdition.setEditionName(rs.getString("NAME"));
+        gameEdition.setReleaseDate(rs.getDate("RELEASE_DATE").toLocalDate());
+        return gameEdition;
+    }
+
+    @Override
     public void delete(GameEdition gameEdition) {
         if (gameEdition == null || gameEdition.getGame() == null || gameEdition.getEditionName() == null) {
             throw new CrudException("Game edition data is invalid");
@@ -178,18 +217,46 @@ public class JdbcGameEditionRepository implements GameEditionRepository {
         }
     }
 
-    private GameEdition mapToEntity(ResultSet rs) throws SQLException {
-        GameEdition edition = new GameEditionImpl();
+    @Override
+    public Optional<GameEdition> findByEditionName(String editionName) {
+        if (editionName == null || editionName.isBlank()) {
+            throw new CrudException("Edition name must not be null or empty");
+        }
 
-        // Simulamos un Game solo con ID
-        GameImpl game = new GameImpl();
-        game.setId(rs.getInt("GAME_ID"));
+        String sql = "SELECT * FROM GAME_EDITION WHERE EDITION_NAME = ?";
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-        edition.setGame(game);
-        edition.setEditionName(rs.getString("EDITION_NAME"));
-        edition.setSpecialContent(rs.getString("SPECIAL_CONTENT"));
-        edition.setPrice(rs.getDouble("PRICE"));
+            stmt.setString(1, editionName);
 
-        return edition;
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return Optional.of(mapToEntity(rs));
+                }
+            }
+
+        } catch (SQLException e) {
+            throw new CrudException("Error retrieving game edition by edition name", e);
+        }
+
+        return Optional.empty();
+    }
+
+    @Override
+    public Set<GameEdition> findAll() {
+        String sql = "SELECT * FROM GAME_EDITION";
+        try (Connection conn = dataSource.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            Set<GameEdition> gameEditions = new HashSet<>();
+            while (rs.next()) {
+                gameEditions.add(mapToEntity(rs));
+            }
+            return gameEditions;
+
+        } catch (SQLException e) {
+            throw new CrudException("Error retrieving all game editions", e);
+        }
     }
 }

@@ -1,5 +1,6 @@
 package cat.uvic.teknos.dam.kamika.repositories.jdbc;
 
+import cat.uvic.teknos.dam.kamika.model.Console;
 import cat.uvic.teknos.dam.kamika.model.Genre;
 import cat.uvic.teknos.dam.kamika.repositories.GenreRepository;
 import cat.uvic.teknos.dam.kamika.model.impl.GenreImpl;
@@ -249,6 +250,23 @@ public class JdbcGenreRepository implements GenreRepository {
         return result;
     }
 
+    @Override
+    public Set<Genre> findAll() {
+        Set<Genre> genres = new HashSet<>();
+        String sql = "SELECT * FROM GENRE";
+        try (Connection conn = dataSource.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                genres.add(mapToEntity(rs));
+            }
+        } catch (SQLException e) {
+            throw new CrudException("Error retrieving all consoles", e);
+        }
+        return genres;
+    }
+
     /**
      * Maps a ResultSet row to a Genre entity.
      *
@@ -262,5 +280,23 @@ public class JdbcGenreRepository implements GenreRepository {
         genre.setName(rs.getString("NAME"));
         genre.setDescription(rs.getString("DESCRIPTION"));
         return genre;
+    }
+
+    @Override
+    public Optional<Genre> findByName(String name) {
+        String sql = "SELECT * FROM GENRE WHERE LOWER(NAME) = LOWER(?)";
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, name);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    Genre genre = mapToEntity(rs);
+                    return Optional.of(genre);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error retrieving genre by name", e);
+        }
+        return Optional.empty();
     }
 }

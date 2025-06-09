@@ -1,5 +1,7 @@
 package cat.uvic.teknos.dam.kamika.model;
 
+import java.time.LocalDate;
+
 /**
  * Interface representing a specific edition of a game.
  * Defines the basic properties and behaviors of a game edition entity.
@@ -22,4 +24,11 @@ public interface GameEdition {
 
     double getPrice();
     void setPrice(double price);
+
+    int getId();
+    void setId(int id);
+
+    LocalDate getReleaseDate();
+
+    void setReleaseDate(LocalDate releaseDate);
 }

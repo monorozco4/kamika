@@ -45,7 +45,6 @@ public class JdbcGameRepository implements GameRepository {
             throw new IllegalArgumentException("Only GameImpl can be saved");
         }
 
-        // Validación mejorada con mensajes claros
         if (game.getTitle() == null || game.getTitle().trim().isEmpty()) {
             throw new IllegalArgumentException("Game title is required");
         }
@@ -194,6 +193,23 @@ public class JdbcGameRepository implements GameRepository {
         } catch (SQLException e) {
             throw new CrudException("Error checking game existence", e);
         }
+    }
+
+    @Override
+    public Set<Game> findAll() {
+        String sql = "SELECT * FROM GAME";
+        Set<Game> games = new HashSet<>();
+        try (Connection conn = dataSource.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                games.add(mapToEntity(rs));
+            }
+        } catch (SQLException e) {
+            throw new CrudException("Error retrieving all games", e);
+        }
+        return games;
     }
 
     private Game mapToEntity(ResultSet rs) throws SQLException {

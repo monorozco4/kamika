@@ -8,6 +8,8 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 
 import java.util.Optional;
+import java.util.Set;
+import java.util.HashSet;
 
 public class JpaGameRepository implements GameRepository {
 
@@ -125,6 +127,14 @@ public class JpaGameRepository implements GameRepository {
             query.setParameter("id", id);
             Long count = query.getSingleResult();
             return count > 0;
+        });
+    }
+
+    @Override
+    public Set<Game> findAll() {
+        return JPAUtil.executeQuery(entityManager -> {
+            TypedQuery<JpaGame> query = entityManager.createQuery("SELECT g FROM JpaGame g", JpaGame.class);
+            return new HashSet<>(query.getResultList());
         });
     }
 }

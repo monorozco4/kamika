@@ -48,18 +48,20 @@ class JdbcConsoleRepositoryTest {
         try (Connection connection = dataSource.getConnection();
              Statement stmt = connection.createStatement()) {
 
-            // Create table if it doesn't exist
-            stmt.execute("""
-                CREATE TABLE IF NOT EXISTS CONSOLE (
-                    ID INT PRIMARY KEY AUTO_INCREMENT,
-                    NAME VARCHAR(255) NOT NULL,
-                    MANUFACTURER VARCHAR(255),
-                    RELEASEYEAR INT
-                )
-            """);
-
-            // Clear table before each test
+            // Borra primero las tablas hijas
+            stmt.execute("DELETE FROM GAME_CONSOLE");
+            // Luego la tabla padre
             stmt.execute("DELETE FROM CONSOLE");
+
+            // Crea la tabla si no existe (opcional, según tu lógica)
+            stmt.execute("""
+            CREATE TABLE IF NOT EXISTS CONSOLE (
+                CONSOLE_ID INT PRIMARY KEY AUTO_INCREMENT,
+                NAME VARCHAR(255) NOT NULL,
+                MANUFACTURER VARCHAR(255),
+                RELEASE_YEAR INT
+            )
+        """);
 
         } catch (Exception e) {
             fail("Error cleaning up database before test", e);

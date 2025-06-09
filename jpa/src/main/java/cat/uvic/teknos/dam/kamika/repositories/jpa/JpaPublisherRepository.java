@@ -1,17 +1,35 @@
 package cat.uvic.teknos.dam.kamika.repositories.jpa;
 
+import cat.uvic.teknos.dam.kamika.model.Genre;
 import cat.uvic.teknos.dam.kamika.model.Publisher;
+import cat.uvic.teknos.dam.kamika.model.jpa.JpaGenre;
 import cat.uvic.teknos.dam.kamika.model.jpa.JpaPublisher;
 import cat.uvic.teknos.dam.kamika.repositories.PublisherRepository;
 import cat.uvic.teknos.dam.kamika.exceptions.CrudException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 public class JpaPublisherRepository implements PublisherRepository {
 
     public JpaPublisherRepository() {}
+
+    @Override
+    public Optional<Publisher> findByName(String name) {
+        return JPAUtil.executeQuery(entityManager -> {
+            TypedQuery<Publisher> query = entityManager.createQuery(
+                    "SELECT p FROM JpaPublisher p WHERE LOWER(p.name) = LOWER(:name)", Publisher.class);
+            query.setParameter("name", name);
+            var resultList = query.getResultList();
+            if (resultList == null || resultList.isEmpty()) {
+                return Optional.empty();
+            }
+            return Optional.of(resultList.getFirst());
+        });
+    }
 
     @Override
     public Optional<Publisher> findById(int id) {
@@ -129,6 +147,14 @@ public class JpaPublisherRepository implements PublisherRepository {
                     "SELECT COUNT(p) FROM JpaPublisher p WHERE LOWER(p.country) = LOWER(:country)", Long.class);
             query.setParameter("country", country);
             return query.getSingleResult();
+        });
+    }
+
+    @Override
+    public Set<Publisher> findAll() {
+        return JPAUtil.executeQuery(entityManager -> {
+            TypedQuery<JpaPublisher> query = entityManager.createQuery("SELECT p FROM JpaPublisher p", JpaPublisher.class);
+            return new HashSet<>(query.getResultList());
         });
     }
 }

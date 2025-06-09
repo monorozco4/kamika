@@ -17,7 +17,7 @@ public class DeveloperImpl implements Developer {
     private int id;
     private String name;
     private String country;
-    private Integer foundationYear;
+    private int foundationYear;
 
     @Override
     public int getId() {
@@ -50,12 +50,12 @@ public class DeveloperImpl implements Developer {
     }
 
     @Override
-    public Integer getFoundationYear() {
+    public int getFoundationYear() {
         return foundationYear;
     }
 
     @Override
-    public void setFoundationYear(Integer foundationYear) {
+    public void setFoundationYear(int foundationYear) {
         this.foundationYear = foundationYear;
     }
 

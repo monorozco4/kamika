@@ -1,16 +1,15 @@
 package cat.uvic.teknos.dam.kamika.model.jpa;
 
 import cat.uvic.teknos.dam.kamika.model.Developer;
-import cat.uvic.teknos.dam.kamika.model.Game;
-import cat.uvic.teknos.dam.kamika.model.Publisher;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
-
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(of = "id")
+@ToString
 @Entity
 @Table(name = "DEVELOPER")
 public class JpaDeveloper implements Developer {
@@ -20,26 +19,15 @@ public class JpaDeveloper implements Developer {
     @Column(name = "DEVELOPER_ID")
     private int id;
 
-    @Column(name = "NAME", nullable = false, length = 100)
+    @Column(name = "NAME", length = 100)
     private String name;
 
-    @Column(name = "COUNTRY", length = 50)
+    @Column(name = "COUNTRY", length = 100)
     private String country;
 
     @Column(name = "FOUNDATION_YEAR")
     private Integer foundationYear;
 
-    // Métodos específicos de JPA
-    @Getter
-    @Setter
-    @OneToOne(mappedBy = "developer", cascade = CascadeType.ALL)
-    private JpaPublisher publisher;
-
-    @Getter
-    @OneToMany(mappedBy = "developer", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<JpaGame> games = new HashSet<>();
-
-    // Implementación de los métodos de la interfaz Developer
     @Override
     public int getId() {
         return id;
@@ -71,48 +59,12 @@ public class JpaDeveloper implements Developer {
     }
 
     @Override
-    public Integer getFoundationYear() {
-        return foundationYear;
+    public int getFoundationYear() {
+        return foundationYear != null ? foundationYear : 0;
     }
 
     @Override
-    public void setFoundationYear(Integer foundationYear) {
+    public void setFoundationYear(int foundationYear) {
         this.foundationYear = foundationYear;
-    }
-
-    public void addGame(Game game) {
-        games.add((JpaGame) game);
-        game.setDeveloper(this);
-    }
-
-    public void removeGame(Game game) {
-        games.remove(game);
-        game.setDeveloper(null);
-    }
-
-    // equals, hashCode y toString
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Developer that)) return false;
-        return getId() == that.getId() &&
-                Objects.equals(getName(), that.getName()) &&
-                Objects.equals(getCountry(), that.getCountry()) &&
-                Objects.equals(getFoundationYear(), that.getFoundationYear());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getId(), getName(), getCountry(), getFoundationYear());
-    }
-
-    @Override
-    public String toString() {
-        return "JpaDeveloper{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", country='" + country + '\'' +
-                ", foundationYear=" + foundationYear +
-                '}';
     }
 }

@@ -1,3 +1,11 @@
+package cat.uvic.teknos.dam.kamika.repositories;
+
+import cat.uvic.teknos.dam.kamika.model.Game;
+
+import java.sql.SQLException;
+import java.util.Optional;
+import java.util.Set;
+
 /**
  * Repository interface for managing Game entities.
  * Follows the repository pattern to abstract the data access operations.
@@ -9,14 +17,6 @@
  * - GameEdition: A game has multiple editions (one-to-many).
  * </p>
  */
-
-package cat.uvic.teknos.dam.kamika.repositories;
-
-import cat.uvic.teknos.dam.kamika.model.Game;
-
-import java.sql.SQLException;
-import java.util.Optional;
-
 public interface GameRepository {
 
     /**
@@ -48,4 +48,11 @@ public interface GameRepository {
      * Check if a game with the given ID exists.
      */
     boolean existsById(int id);
+
+    /**
+     * Find all games.
+     *
+     * @return a set containing all games
+     */
+    Set<Game> findAll();
 }

@@ -1,12 +1,12 @@
 package cat.uvic.teknos.dam.kamika.repositories.jdbc.jupiter;
 
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
 
 class SchemaLoaderTest {
     @Test
-    void loadSchema() {
-        SchemaLoader.loadScript("/test.sql");
+    void verificaDataSqlEnClasspath() {
+        assertNotNull(SchemaLoader.class.getResourceAsStream("/data.sql"), "data.sql no está en el classpath");
     }
 }

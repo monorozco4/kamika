@@ -119,59 +119,53 @@ class JdbcGameRepositoryTest {
         assertFalse(found.get().isMultiplayer());
     }
 
-    /* @Test
+    @Test
     @Order(2)
     void shouldUpdateGameWhenExists() {
-        // 1. Obtener el juego existente para asegurar que tenemos un ID válido
         Optional<Game> optionalGame = repository.findById(2);
         assertTrue(optionalGame.isPresent());
         Game existingGame = optionalGame.get();
 
-        // 2. Crear un nuevo objeto de juego con TODOS los campos requeridos
         GameImpl gameToUpdate = new GameImpl();
-
-        // 3. Establecer todos los campos obligatorios
         gameToUpdate.setId(existingGame.getId());
         gameToUpdate.setTitle("Elden Ring DLC Edition");
-        gameToUpdate.setReleaseDate(existingGame.getReleaseDate()); // Mantener la fecha original
+        gameToUpdate.setReleaseDate(existingGame.getReleaseDate());
 
-        // 4. Establecer las relaciones requeridas (developer y publisher)
         DeveloperImpl developer = new DeveloperImpl();
-        developer.setId(2); // ID del developer existente en los INSERTs
+        developer.setId(2);
         gameToUpdate.setDeveloper(developer);
 
         PublisherImpl publisher = new PublisherImpl();
-        publisher.setId(2); // ID del publisher existente en los INSERTs
+        publisher.setId(2);
         gameToUpdate.setPublisher(publisher);
 
-        // 5. Establecer los campos adicionales requeridos
         gameToUpdate.setPegiRating("PEGI 18+");
         gameToUpdate.setMultiplayer(false);
 
-        // 6. Ejecutar la actualización
         Game updatedGame = repository.save(gameToUpdate);
 
-        // 7. Verificar los cambios
         assertNotNull(updatedGame);
         assertEquals("Elden Ring DLC Edition", updatedGame.getTitle());
         assertEquals("PEGI 18+", updatedGame.getPegiRating());
         assertFalse(updatedGame.isMultiplayer());
-    } */
+    }
 
     @Test
     @Order(3)
     void shouldFailWhenSavingGameWithInvalidDeveloperOrPublisher() {
         DeveloperImpl invalidDeveloper = new DeveloperImpl();
-        invalidDeveloper.setId(999); // ID no existente
+        invalidDeveloper.setId(999);
 
         PublisherImpl invalidPublisher = new PublisherImpl();
-        invalidPublisher.setId(999); // ID no existente
+        invalidPublisher.setId(999);
 
         Game game = new GameImpl();
-        ((GameImpl) game).setTitle("Fake Game");
-        ((GameImpl) game).setReleaseDate(LocalDate.now());
-        ((GameImpl) game).setDeveloper(invalidDeveloper);
-        ((GameImpl) game).setPublisher(invalidPublisher);
+        game.setTitle("Fake Game");
+        game.setReleaseDate(LocalDate.now());
+        game.setDeveloper(invalidDeveloper);
+        game.setPublisher(invalidPublisher);
+        game.setPegiRating("PEGI 18");
+        game.setMultiplayer(false);
 
         assertThrows(CrudException.class, () -> repository.save(game));
     }
@@ -179,7 +173,6 @@ class JdbcGameRepositoryTest {
     @Test
     @Order(4)
     void shouldDeleteGameUsingEntity() {
-        // Crear nuevo juego usando IDs existentes (3 para Nintendo)
         GameImpl game = new GameImpl();
         game.setTitle("The Legend of Zelda: Breath of the Wild");
         game.setReleaseDate(LocalDate.of(2017, 3, 3));
@@ -206,7 +199,6 @@ class JdbcGameRepositoryTest {
     void shouldCountGamesCorrectly() {
         long initialCount = repository.count();
 
-        // Crear nuevo juego usando IDs existentes
         GameImpl game = new GameImpl();
         game.setTitle("Uncharted 4");
         game.setReleaseDate(LocalDate.of(2016, 5, 10));
@@ -230,7 +222,7 @@ class JdbcGameRepositoryTest {
     @Test
     @Order(6)
     void shouldReturnTrueWhenGameExists() {
-        assertTrue(repository.existsById(1)); // Juego insertado en setUp
+        assertTrue(repository.existsById(1));
     }
 
     @Test
@@ -243,8 +235,8 @@ class JdbcGameRepositoryTest {
     @Order(8)
     void shouldThrowIllegalArgumentExceptionOnNullTitle() {
         Game game = new GameImpl();
-        ((GameImpl) game).setTitle(null);
-        ((GameImpl) game).setReleaseDate(LocalDate.now());
+        game.setTitle(null);
+        game.setReleaseDate(LocalDate.now());
 
         DeveloperImpl developer = new DeveloperImpl();
         developer.setId(1);
@@ -252,8 +244,8 @@ class JdbcGameRepositoryTest {
         PublisherImpl publisher = new PublisherImpl();
         publisher.setId(1);
 
-        ((GameImpl) game).setDeveloper(developer);
-        ((GameImpl) game).setPublisher(publisher);
+        game.setDeveloper(developer);
+        game.setPublisher(publisher);
 
         assertThrows(IllegalArgumentException.class, () -> repository.save(game));
     }
@@ -261,7 +253,6 @@ class JdbcGameRepositoryTest {
     @Test
     @Order(9)
     void shouldThrowCrudExceptionWhenInvalidOperation() {
-        // Simular error de base de datos
         DataSource failingDataSource = new DataSource() {
             @Override
             public Connection getConnection() throws SQLException {
@@ -271,5 +262,15 @@ class JdbcGameRepositoryTest {
 
         JdbcGameRepository failingRepository = new JdbcGameRepository(failingDataSource);
         assertThrows(CrudException.class, () -> failingRepository.findById(1));
+    }
+
+    @Test
+    @Order(10)
+    void shouldFindAllGames() {
+        var games = repository.findAll();
+        assertNotNull(games);
+        assertTrue(games.size() >= 2);
+        assertTrue(games.stream().anyMatch(g -> "The Last of Us Part II".equals(g.getTitle())));
+        assertTrue(games.stream().anyMatch(g -> "Elden Ring".equals(g.getTitle())));
     }
 }

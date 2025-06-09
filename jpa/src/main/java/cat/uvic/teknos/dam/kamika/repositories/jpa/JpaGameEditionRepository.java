@@ -8,10 +8,20 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class JpaGameEditionRepository implements GameEditionRepository {
 
     public JpaGameEditionRepository() {}
+
+    @Override
+    public Optional<GameEdition> findById(int id) {
+        return JPAUtil.executeQuery(entityManager -> {
+            JpaGameEdition gameEdition = entityManager.find(JpaGameEdition.class, id);
+            return Optional.ofNullable(gameEdition);
+        });
+    }
 
     @Override
     public Optional<GameEdition> findByGameIdAndEditionName(int gameId, String editionName) {
@@ -133,6 +143,30 @@ public class JpaGameEditionRepository implements GameEditionRepository {
             query.setParameter("editionName", editionName);
             Long count = query.getSingleResult();
             return count > 0;
+        });
+    }
+
+    @Override
+    public Optional<GameEdition> findByEditionName(String editionName) {
+        return JPAUtil.executeQuery(entityManager -> {
+            TypedQuery<JpaGameEdition> query = entityManager.createQuery(
+                    "SELECT ge FROM JpaGameEdition ge WHERE ge.editionName = :editionName",
+                    JpaGameEdition.class
+            );
+            query.setParameter("editionName", editionName);
+            return query.getResultStream().findFirst().map(ge -> ge);
+        });
+    }
+
+    @Override
+    public Set<GameEdition> findAll() {
+        return JPAUtil.executeQuery(entityManager -> {
+            TypedQuery<JpaGameEdition> query = entityManager.createQuery(
+                    "SELECT ge FROM JpaGameEdition ge", JpaGameEdition.class
+            );
+            return query.getResultStream()
+                    .map(ge -> (GameEdition) ge)
+                    .collect(Collectors.toSet());
         });
     }
 }

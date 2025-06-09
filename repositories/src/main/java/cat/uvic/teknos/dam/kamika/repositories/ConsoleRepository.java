@@ -13,6 +13,7 @@ package cat.uvic.teknos.dam.kamika.repositories;
 import cat.uvic.teknos.dam.kamika.model.Console;
 
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * Repository interface for managing Console entities.
@@ -65,4 +66,11 @@ public interface ConsoleRepository {
      * @return true if the console exists, false otherwise
      */
     boolean existsById(int id);
+
+    /**
+     * Returns all consoles.
+     *
+     * @return a set of all consoles
+     */
+    Set<Console> findAll();
 }

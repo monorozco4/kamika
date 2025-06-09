@@ -50,9 +50,7 @@ public class GenreImpl implements Genre {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Genre)) return false;
-
-        Genre genre = (Genre) o;
+        if (!(o instanceof Genre genre)) return false;
 
         return getId() == genre.getId() &&
                 Objects.equals(getName(), genre.getName()) &&

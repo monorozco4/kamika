@@ -10,9 +10,11 @@
 
 package cat.uvic.teknos.dam.kamika.repositories;
 
+import cat.uvic.teknos.dam.kamika.model.Console;
 import cat.uvic.teknos.dam.kamika.model.Developer;
 
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * Repository interface for managing Developer entities.
@@ -75,4 +77,11 @@ public interface DeveloperRepository {
      * @return the number of developers from the specified country
      */
     long countByCountryIgnoreCase(String country);
+
+    /**
+     * Returns all developers.
+     *
+     * @return a set of all developers
+     */
+    Set<Developer> findAll();
 }

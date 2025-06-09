@@ -2,88 +2,116 @@ package cat.uvic.teknos.dam.kamika.model.jpa;
 
 import cat.uvic.teknos.dam.kamika.model.*;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.Set;
+import java.util.stream.Collectors;
 
-/**
- * JPA Entity representing a video game.
- * <p>
- * Maps to the "GAME" table in the database.
- * Follows professor's style: uses Lombok, uppercase column names.
- * </p>
- * <p>
- * Relationships will be mapped as follows (to be added later):
- * - Many-to-many with Genre
- * - Many-to-many with Console
- * - One-to-many with GameEdition.
- * - Many-to-one with Developer.
- * - Many-to-one with Publisher.
- * </p>
- */
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
 @Entity
 @Table(name = "GAME")
-@Data
 public class JpaGame implements Game {
 
     @Id
-    @Column(name = "ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "GAME_ID")
     private int id;
 
-    @Column(name = "TITLE")
+    @Column(name = "TITLE", length = 100)
     private String title;
 
     @Column(name = "RELEASE_DATE")
     private LocalDate releaseDate;
 
-    @Column(name = "PEGI_RATING")
+    @ManyToOne
+    @JoinColumn(name = "DEVELOPER_ID")
+    private JpaDeveloper developer;
+
+    @ManyToOne
+    @JoinColumn(name = "PUBLISHER_ID")
+    private JpaPublisher publisher;
+
+    @Column(name = "PEGI_RATING", length = 10)
     private String pegiRating;
 
     @Column(name = "MULTIPLAYER")
     private boolean multiplayer;
 
-    @Override
-    public Developer getDeveloper() {
-        return null;
-    }
+    @ManyToMany
+    @JoinTable(
+            name = "GAME_GENRE",
+            joinColumns = @JoinColumn(name = "GAME_ID"),
+            inverseJoinColumns = @JoinColumn(name = "GENRE_ID")
+    )
+    private Set<JpaGenre> genres;
+
+    @ManyToMany
+    @JoinTable(
+            name = "GAME_CONSOLE",
+            joinColumns = @JoinColumn(name = "GAME_ID"),
+            inverseJoinColumns = @JoinColumn(name = "CONSOLE_ID")
+    )
+    private Set<JpaConsole> consoles;
 
     @Override
-    public void setDeveloper(Developer developer) {
-
-    }
+    public int getId() { return id; }
+    @Override
+    public void setId(int id) { this.id = id; }
 
     @Override
-    public Publisher getPublisher() {
-        return null;
-    }
+    public String getTitle() { return title; }
+    @Override
+    public void setTitle(String title) { this.title = title; }
 
     @Override
-    public void setPublisher(Publisher publisher) {
+    public LocalDate getReleaseDate() { return releaseDate; }
+    @Override
+    public void setReleaseDate(LocalDate releaseDate) { this.releaseDate = releaseDate; }
 
-    }
+    @Override
+    public Developer getDeveloper() { return developer; }
+    @Override
+    public void setDeveloper(Developer developer) { this.developer = (JpaDeveloper) developer; }
+
+    @Override
+    public Publisher getPublisher() { return publisher; }
+    @Override
+    public void setPublisher(Publisher publisher) { this.publisher = (JpaPublisher) publisher; }
+
+    @Override
+    public String getPegiRating() { return pegiRating; }
+    @Override
+    public void setPegiRating(String pegiRating) { this.pegiRating = pegiRating; }
+
+    @Override
+    public boolean isMultiplayer() { return multiplayer; }
+    @Override
+    public void setMultiplayer(boolean multiplayer) { this.multiplayer = multiplayer; }
 
     @Override
     public Set<Genre> getGenres() {
-        return Set.of();
+        return genres == null ? null : genres.stream().map(g -> (Genre) g).collect(Collectors.toSet());
     }
-
     @Override
     public void setGenres(Set<Genre> genres) {
-
+        this.genres = genres == null ? null : genres.stream().map(g -> (JpaGenre) g).collect(Collectors.toSet());
     }
 
     @Override
     public Set<Console> getConsoles() {
-        return Set.of();
+        return consoles == null ? null : consoles.stream().map(c -> (Console) c).collect(Collectors.toSet());
     }
-
     @Override
     public void setConsoles(Set<Console> consoles) {
-
+        this.consoles = consoles == null ? null : consoles.stream().map(c -> (JpaConsole) c).collect(Collectors.toSet());
     }
 
+    // Implementación vacía para cumplir la interfaz Game
     @Override
     public GameEdition getEdition() {
         return null;
@@ -91,6 +119,6 @@ public class JpaGame implements Game {
 
     @Override
     public void setEdition(GameEdition edition) {
-
+        // No hacer nada
     }
 }

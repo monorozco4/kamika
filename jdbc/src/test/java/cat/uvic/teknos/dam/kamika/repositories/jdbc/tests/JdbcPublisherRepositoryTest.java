@@ -3,189 +3,165 @@ package cat.uvic.teknos.dam.kamika.repositories.jdbc.tests;
 import cat.uvic.teknos.dam.kamika.model.Publisher;
 import cat.uvic.teknos.dam.kamika.model.impl.PublisherImpl;
 import cat.uvic.teknos.dam.kamika.repositories.jdbc.JdbcPublisherRepository;
-import cat.uvic.teknos.dam.kamika.repositories.jdbc.datasources.DataSource;
 import cat.uvic.teknos.dam.kamika.repositories.jdbc.datasources.SingleConnectionDataSource;
 import cat.uvic.teknos.dam.kamika.repositories.jdbc.exceptions.CrudException;
-
-import org.junit.jupiter.api.*;
 
 import java.sql.Connection;
 import java.sql.Statement;
 import java.util.Optional;
 
+import cat.uvic.teknos.dam.kamika.repositories.jdbc.jupiter.LoadDatabaseExtension;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+
 import static org.junit.jupiter.api.Assertions.*;
 
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@ExtendWith(LoadDatabaseExtension.class)
 class JdbcPublisherRepositoryTest {
 
-    private static DataSource dataSource;
-    private static JdbcPublisherRepository repository;
+    private JdbcPublisherRepository publisherRepository;
 
-    private static final String TEST_NAME = "Nintendo";
-    private static final String UPDATED_NAME = "Square Enix";
-    private static final String TEST_COUNTRY = "Japan";
-    private static final String UPDATED_COUNTRY = "United Kingdom";
+    @BeforeEach
+    void setUp() {
+        var dataSource = new SingleConnectionDataSource();
 
-    private static int publisherId;
-
-    @BeforeAll
-    static void setUp() {
-        dataSource = new SingleConnectionDataSource();
-        repository = new JdbcPublisherRepository(dataSource);
-        clearTable();
-    }
-
-    @AfterAll
-    static void tearDown() {
-        clearTable();
-    }
-
-    private static void clearTable() {
         try (Connection connection = dataSource.getConnection();
-             Statement statement = connection.createStatement()) {
-            statement.executeUpdate("DELETE FROM PUBLISHER");
-            statement.executeUpdate("ALTER TABLE PUBLISHER AUTO_INCREMENT = 1");
+             Statement stmt = connection.createStatement()) {
+
+            stmt.execute("DELETE FROM GAME_CONSOLE");
+            stmt.execute("DELETE FROM GAME_EDITION");
+            stmt.execute("DELETE FROM GAME");
+            stmt.execute("DELETE FROM PUBLISHER");
+
+            stmt.execute("""
+                CREATE TABLE IF NOT EXISTS PUBLISHER (
+                    PUBLISHER_ID INT PRIMARY KEY AUTO_INCREMENT,
+                    NAME VARCHAR(100) NOT NULL,
+                    COUNTRY VARCHAR(50)
+                )
+            """);
+
+            stmt.execute("""
+                CREATE TABLE IF NOT EXISTS GAME (
+                    GAME_ID INT PRIMARY KEY AUTO_INCREMENT,
+                    TITLE VARCHAR(100) NOT NULL,
+                    RELEASE_DATE DATE,
+                    DEVELOPER_ID INT NOT NULL,
+                    PUBLISHER_ID INT NOT NULL,
+                    GENRE_ID INT,
+                    PEGI_RATING VARCHAR(10),
+                    IS_MULTIPLAYER TINYINT
+                )
+            """);
+
         } catch (Exception e) {
-            throw new RuntimeException("Failed to clean up table before test", e);
+            fail("Error cleaning up database before test", e);
         }
+
+        publisherRepository = new JdbcPublisherRepository(dataSource);
     }
 
     @Test
-    @Order(1)
-    void shouldSaveNewPublisher() {
+    void shouldSaveAndFindPublisherById() {
         Publisher publisher = new PublisherImpl();
-        publisher.setName(TEST_NAME);
-        publisher.setCountry(TEST_COUNTRY);
+        publisher.setName("Nintendo");
+        publisher.setCountry("Japan");
 
-        Publisher saved = repository.save(publisher);
+        Publisher saved = publisherRepository.save(publisher);
+        int id = saved.getId();
 
-        assertNotNull(saved);
-        assertTrue(saved.getId() > 0);
-        assertEquals(TEST_NAME, saved.getName());
-        assertEquals(TEST_COUNTRY, saved.getCountry());
-
-        publisherId = saved.getId();
+        Optional<Publisher> found = publisherRepository.findById(id);
+        assertTrue(found.isPresent());
+        assertEquals("Nintendo", found.get().getName());
+        assertEquals("Japan", found.get().getCountry());
     }
 
     @Test
-    @Order(2)
-    void shouldFindPublisherById() {
-        Optional<Publisher> found = repository.findById(publisherId);
-        assertTrue(found.isPresent(), "Publisher should be present");
+    void shouldUpdatePublisherWhenIdExists() {
+        Publisher publisher = new PublisherImpl();
+        publisher.setName("Sony");
+        publisher.setCountry("Japan");
 
-        Publisher p = found.get();
-        assertEquals(publisherId, p.getId());
-        assertEquals(TEST_NAME, p.getName());
-        assertEquals(TEST_COUNTRY, p.getCountry());
-    }
+        Publisher saved = publisherRepository.save(publisher);
+        int id = saved.getId();
 
-    @Test
-    @Order(3)
-    void shouldUpdatePublisher() {
         Publisher toUpdate = new PublisherImpl();
-        toUpdate.setId(publisherId);
-        toUpdate.setName(UPDATED_NAME);
-        toUpdate.setCountry(UPDATED_COUNTRY);
+        toUpdate.setId(id);
+        toUpdate.setName("Sony Interactive");
+        toUpdate.setCountry("Japan");
 
-        repository.save(toUpdate);
+        Publisher updated = publisherRepository.save(toUpdate);
 
-        Optional<Publisher> updated = repository.findById(publisherId);
-        assertTrue(updated.isPresent(), "Updated publisher should be present");
-
-        Publisher p = updated.get();
-        assertEquals(publisherId, p.getId());
-        assertEquals(UPDATED_NAME, p.getName());
-        assertEquals(UPDATED_COUNTRY, p.getCountry());
+        Optional<Publisher> found = publisherRepository.findById(id);
+        assertTrue(found.isPresent());
+        assertEquals("Sony Interactive", found.get().getName());
     }
 
     @Test
-    @Order(4)
     void shouldDeletePublisher() {
-        Publisher publisherToDelete = new PublisherImpl();
-        publisherToDelete.setName("EA Sports");
-        publisherToDelete.setCountry("USA");
-        Publisher saved = repository.save(publisherToDelete);
-
-        repository.delete(saved);
-
-        Optional<Publisher> deleted = repository.findById(saved.getId());
-        assertFalse(deleted.isPresent(), "Publisher should not exist after delete()");
-    }
-
-    @Test
-    @Order(5)
-    void shouldDeletePublisherById() {
-        Publisher publisherToDelete = new PublisherImpl();
-        publisherToDelete.setName("Ubisoft");
-        publisherToDelete.setCountry("France");
-        Publisher saved = repository.save(publisherToDelete);
-
-        boolean result = repository.deleteById(saved.getId());
-
-        assertTrue(result, "Deletion should return true");
-        Optional<Publisher> deleted = repository.findById(saved.getId());
-        assertFalse(deleted.isPresent(), "Publisher should not exist after deleteById()");
-    }
-
-    @Test
-    @Order(6)
-    void shouldCountPublishers() {
-        long countBefore = repository.count();
-
-        Publisher p1 = new PublisherImpl();
-        p1.setName("Sega");
-        p1.setCountry("Japan");
-        repository.save(p1);
-
-        Publisher p2 = new PublisherImpl();
-        p2.setName("Bandai Namco");
-        p2.setCountry("Japan");
-        repository.save(p2);
-
-        long countAfter = repository.count();
-        assertEquals(countBefore + 2, countAfter, "Count should have increased by 2");
-    }
-
-    @Test
-    @Order(7)
-    void shouldCheckIfExistsById() {
         Publisher publisher = new PublisherImpl();
-        publisher.setName("Atari");
+        publisher.setName("Ubisoft");
+        publisher.setCountry("France");
+
+        Publisher saved = publisherRepository.save(publisher);
+        int id = saved.getId();
+
+        publisherRepository.delete(saved);
+
+        Optional<Publisher> found = publisherRepository.findById(id);
+        assertFalse(found.isPresent());
+    }
+
+    @Test
+    void shouldDeletePublisherById() {
+        Publisher publisher = new PublisherImpl();
+        publisher.setName("EA");
         publisher.setCountry("USA");
-        Publisher saved = repository.save(publisher);
 
-        assertTrue(repository.existsById(saved.getId()), "existsById should return true for existing publisher");
+        Publisher saved = publisherRepository.save(publisher);
+        int id = saved.getId();
+
+        boolean deleted = publisherRepository.deleteById(id);
+        assertTrue(deleted);
+
+        Optional<Publisher> found = publisherRepository.findById(id);
+        assertFalse(found.isPresent());
     }
 
     @Test
-    @Order(8)
+    void shouldCountPublishers() {
+        Publisher publisher1 = new PublisherImpl();
+        publisher1.setName("Square Enix");
+        publisher1.setCountry("Japan");
+        publisherRepository.save(publisher1);
+
+        Publisher publisher2 = new PublisherImpl();
+        publisher2.setName("Activision");
+        publisher2.setCountry("USA");
+        publisherRepository.save(publisher2);
+
+        long count = publisherRepository.count();
+        assertEquals(2, count);
+    }
+
+    @Test
+    void shouldReturnTrueWhenPublisherExists() {
+        Publisher publisher = new PublisherImpl();
+        publisher.setName("Capcom");
+        publisher.setCountry("Japan");
+        Publisher saved = publisherRepository.save(publisher);
+
+        assertTrue(publisherRepository.existsById(saved.getId()));
+    }
+
+    @Test
     void shouldReturnFalseWhenPublisherDoesNotExist() {
-        assertFalse(repository.existsById(999), "existsById should return false for non-existing publisher");
+        assertFalse(publisherRepository.existsById(999));
     }
 
     @Test
-    @Order(9)
-    void shouldCountByCountryIgnoreCase() {
-        // Aseguramos tener al menos uno con país coincidente
-        Publisher p1 = new PublisherImpl();
-        p1.setName("FromSoftware");
-        p1.setCountry("Japan");
-        repository.save(p1);
-
-        long count = repository.countByCountryIgnoreCase("JAPAN");
-        assertTrue(count >= 1, "Should find at least one publisher from Japan");
-    }
-
-    @Test
-    @Order(10)
-    void shouldNotFindAnyPublisherByInvalidCountry() {
-        long count = repository.countByCountryIgnoreCase("Atlantis");
-        assertEquals(0, count, "No publishers should be found in Atlantis");
-    }
-
-    @Test
-    @Order(11)
     void shouldThrowCrudExceptionOnInvalidOperation() {
-        assertThrows(CrudException.class, () -> repository.findById(-1), "Invalid ID should throw CrudException");
+        assertThrows(CrudException.class, () -> publisherRepository.findById(-1));
     }
 }

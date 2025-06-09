@@ -51,18 +51,22 @@ class JdbcDeveloperRepositoryTest {
         try (Connection connection = dataSource.getConnection();
              Statement stmt = connection.createStatement()) {
 
+            // Clear table before each test
+            stmt.execute("DELETE FROM GAME_EDITION");
+            stmt.execute("DELETE FROM GAME_CONSOLE");
+            stmt.execute("DELETE FROM GAME");
+            stmt.execute("DELETE FROM PUBLISHER");
+            stmt.execute("DELETE FROM DEVELOPER");
+
             // Create table if it doesn't exist
             stmt.execute("""
             CREATE TABLE IF NOT EXISTS DEVELOPER (
-                ID INT PRIMARY KEY AUTO_INCREMENT,
+                DEVELOPER_ID INT PRIMARY KEY AUTO_INCREMENT,
                 NAME VARCHAR(255) NOT NULL,
                 COUNTRY VARCHAR(255),
                 FOUNDATION_YEAR INT
             )
         """);
-
-            // Clear table before each test
-            stmt.execute("DELETE FROM DEVELOPER");
 
         } catch (Exception e) {
             fail("Error cleaning up database before test", e);

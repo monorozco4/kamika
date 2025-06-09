@@ -13,6 +13,7 @@ package cat.uvic.teknos.dam.kamika.repositories;
 import cat.uvic.teknos.dam.kamika.model.Publisher;
 
 import java.util.Optional;
+import java.util.Set;
 
 public interface PublisherRepository {
 
@@ -62,13 +63,9 @@ public interface PublisherRepository {
      */
     boolean existsById(int id);
 
-    // Custom methods
-
-    /**
-     * Count the number of publishers from a specific country.
-     *
-     * @param country the country name
-     * @return the number of publishers from the specified country
-     */
     long countByCountryIgnoreCase(String country);
+
+    Optional<Publisher> findByName(String name);
+
+    Set<Publisher> findAll();
 }

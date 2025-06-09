@@ -88,7 +88,7 @@ public class JdbcConsoleRepository implements ConsoleRepository {
 
             stmt.setString(1, console.getName());
             stmt.setString(2, console.getManufacturer());
-            stmt.setInt(3, console.getReleaseYear());  // ← Aquí estaba el error
+            stmt.setInt(3, console.getReleaseYear());
             stmt.setInt(4, console.getId());
 
             int affectedRows = stmt.executeUpdate();
@@ -165,6 +165,23 @@ public class JdbcConsoleRepository implements ConsoleRepository {
         }
     }
 
+    @Override
+    public Set<Console> findAll() {
+        Set<Console> consoles = new HashSet<>();
+        String sql = "SELECT * FROM CONSOLE";
+        try (Connection conn = dataSource.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                consoles.add(mapToEntity(rs));
+            }
+        } catch (SQLException e) {
+            throw new CrudException("Error retrieving all consoles", e);
+        }
+        return consoles;
+    }
+
     /**
      * Maps a ResultSet row to a Console entity.
      *
@@ -174,7 +191,7 @@ public class JdbcConsoleRepository implements ConsoleRepository {
      */
     private Console mapToEntity(ResultSet rs) throws SQLException {
         Console console = new ConsoleImpl();
-        console.setId(rs.getInt("CONSOLE_ID")); //
+        console.setId(rs.getInt("CONSOLE_ID"));
         console.setName(rs.getString("NAME"));
         console.setManufacturer(rs.getString("MANUFACTURER"));
         console.setReleaseYear(rs.getObject("RELEASE_YEAR", Integer.class));

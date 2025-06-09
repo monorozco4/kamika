@@ -20,6 +20,7 @@ public interface Developer {
     String getCountry();
     void setCountry(String country);
 
-    Integer getFoundationYear();
-    void setFoundationYear(Integer foundationYear);
+    int getFoundationYear();
+    void setFoundationYear(int foundationYear);
+
 }

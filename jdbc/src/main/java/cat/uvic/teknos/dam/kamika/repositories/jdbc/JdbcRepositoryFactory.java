@@ -1,77 +1,73 @@
 package cat.uvic.teknos.dam.kamika.repositories.jdbc;
 
-import cat.uvic.teknos.dam.kamika.repositories.GameRepository;
-import cat.uvic.teknos.dam.kamika.repositories.DeveloperRepository;
-import cat.uvic.teknos.dam.kamika.repositories.PublisherRepository;
-import cat.uvic.teknos.dam.kamika.repositories.GenreRepository;
-import cat.uvic.teknos.dam.kamika.repositories.ConsoleRepository;
-import cat.uvic.teknos.dam.kamika.repositories.GameEditionRepository;
-import cat.uvic.teknos.dam.kamika.repositories.GameConsoleRepository;
-
+import cat.uvic.teknos.dam.kamika.repositories.*;
 import cat.uvic.teknos.dam.kamika.repositories.jdbc.datasources.SingleConnectionDataSource;
 
 /**
  * Factory class that provides JDBC repository instances.
- * Facilitates centralized and decoupled creation of repositories in the system.
+ * Implements RepositoryFactory to ensure compatibility.
  */
-public class RepositoryFactory {
+public class JdbcRepositoryFactory implements RepositoryFactory {
 
-    private final SingleConnectionDataSource dataSource;
+    private SingleConnectionDataSource dataSource;
+
+    /**
+     * Default constructor.
+     * Initializes the factory without a data source.
+     */
+    public JdbcRepositoryFactory() {
+        this.dataSource = new SingleConnectionDataSource(); // Inicializa el dataSource
+    }
 
     /**
      * Constructor that receives a shared data source for all repositories.
      *
      * @param dataSource The data source used to obtain database connections.
      */
-    public RepositoryFactory(SingleConnectionDataSource dataSource) {
+    public JdbcRepositoryFactory(SingleConnectionDataSource dataSource) {
         this.dataSource = dataSource;
     }
 
     /**
-     * Returns an instance of GameRepository.
+     * Sets the data source to be used by the repositories.
+     *
+     * @param dataSource The data source to set.
      */
+    public void setDataSource(SingleConnectionDataSource dataSource) {
+        this.dataSource = dataSource;
+    }
+
+    @Override
     public GameRepository getGameRepository() {
         return new JdbcGameRepository(dataSource);
     }
 
-    /**
-     * Returns an instance of DeveloperRepository.
-     */
+    @Override
     public DeveloperRepository getDeveloperRepository() {
         return new JdbcDeveloperRepository(dataSource);
     }
 
-    /**
-     * Returns an instance of PublisherRepository.
-     */
+    @Override
     public PublisherRepository getPublisherRepository() {
         return new JdbcPublisherRepository(dataSource);
     }
 
-    /**
-     * Returns an instance of GenreRepository.
-     */
+    @Override
     public GenreRepository getGenreRepository() {
         return new JdbcGenreRepository(dataSource);
     }
 
-    /**
-     * Returns an instance of ConsoleRepository.
-     */
+    @Override
     public ConsoleRepository getConsoleRepository() {
         return new JdbcConsoleRepository(dataSource);
     }
 
-    /**
-     * Returns an instance of GameEditionRepository.
-     */
+    @Override
     public GameEditionRepository getGameEditionRepository() {
         return new JdbcGameEditionRepository(dataSource);
     }
 
-    /**
-     * Returns an instance of GameConsoleRepository.
-     */
+    @Override
     public GameConsoleRepository getGameConsoleRepository() {
         return new JdbcGameConsoleRepository(dataSource);
     }

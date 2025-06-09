@@ -1,5 +1,6 @@
 package cat.uvic.teknos.dam.kamika.repositories.jdbc;
 
+import cat.uvic.teknos.dam.kamika.model.Genre;
 import cat.uvic.teknos.dam.kamika.model.Publisher;
 import cat.uvic.teknos.dam.kamika.repositories.PublisherRepository;
 import cat.uvic.teknos.dam.kamika.model.impl.PublisherImpl;
@@ -15,6 +16,24 @@ public class JdbcPublisherRepository implements PublisherRepository {
 
     public JdbcPublisherRepository(DataSource dataSource) {
         this.dataSource = Objects.requireNonNull(dataSource);
+    }
+
+    @Override
+    public Optional<Publisher> findByName(String name) {
+        String sql = "SELECT * FROM PUBLISHER WHERE LOWER(NAME) = LOWER(?)";
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, name);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    Publisher publisher = mapToEntity(rs);
+                    return Optional.of(publisher);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error al buscar publisher por nombre", e);
+        }
+        return Optional.empty();
     }
 
     @Override
@@ -36,6 +55,23 @@ public class JdbcPublisherRepository implements PublisherRepository {
             throw new CrudException("Error finding publisher by ID", e);
         }
         return Optional.empty();
+    }
+
+    @Override
+    public Set<Publisher> findAll() {
+        Set<Publisher> publishers = new HashSet<>();
+        String sql = "SELECT * FROM PUBLISHER";
+        try (Connection conn = dataSource.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                publishers.add(mapToEntity(rs));
+            }
+        } catch (SQLException e) {
+            throw new CrudException("Error retrieving all consoles", e);
+        }
+        return publishers;
     }
 
     @Override

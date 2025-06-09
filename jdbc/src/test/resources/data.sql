@@ -89,13 +89,13 @@ INSERT INTO GAME_EDITION (GAME_ID, EDITION_NAME, SPECIAL_CONTENT, PRICE) VALUES
 -- Insert game-console relationships (GAME_CONSOLE)
 
 INSERT INTO GAME_CONSOLE (GAME_ID, CONSOLE_ID, RELEASE_DATE, IS_EXCLUSIVE, RESOLUTION) VALUES
-                                                                                           (1, 1, '2020-06-19', 1, '4K/30fps'),  -- The Last of Us PS5 (exclusive)
-                                                                                           (2, 1, '2020-12-10', 0, '4K/30fps'),  -- Cyberpunk PS5
-                                                                                           (2, 2, '2020-12-10', 0, '4K/30fps'),  -- Cyberpunk XSX
-                                                                                           (2, 4, '2020-12-10', 0, '4K/60fps'),  -- Cyberpunk PC
-                                                                                           (3, 3, '2017-03-03', 1, '1080p/30fps'), -- Zelda Switch (exclusive)
-                                                                                           (4, 1, '2022-02-25', 0, '4K/60fps'),  -- Elden Ring PS5
-                                                                                           (4, 2, '2022-02-25', 0, '4K/60fps'),  -- Elden Ring XSX
-                                                                                           (5, 1, '2022-03-15', 0, '4K/60fps'),  -- GTA V PS5
-                                                                                           (6, 1, '2022-11-09', 1, '4K/60fps'),  -- God of War PS5 (exclusive)
-                                                                                           (7, 1, '2020-11-12', 1, '4K/60fps');  -- Spider-Man PS5 (exclusive)
+                                                                                           (1, 1, '2020-06-19', 1, '4K/30fps'),   -- The Last of Us PS5 (exclusivo)
+                                                                                           (2, 1, '2020-12-10', 0, '4K/30fps'),   -- Cyberpunk PS5
+                                                                                           (2, 2, '2020-12-10', 0, '4K/30fps'),   -- Cyberpunk XSX
+                                                                                           (2, 4, '2020-12-10', 0, '4K/60fps'),   -- Cyberpunk PC
+                                                                                           (3, 3, '2017-03-03', 1, '1080p/30fps'),-- Zelda Switch (exclusivo)
+                                                                                           (4, 1, '2022-02-25', 0, '4K/60fps'),   -- Elden Ring PS5
+                                                                                           (4, 2, '2022-02-25', 0, '4K/60fps'),   -- Elden Ring XSX
+                                                                                           (5, 1, '2022-03-15', 0, '4K/60fps'),   -- GTA V PS5
+                                                                                           (6, 1, '2022-11-09', 1, '4K/60fps'),   -- God of War PS5 (exclusivo)
+                                                                                           (7, 1, '2020-11-12', 1, '4K/60fps');   -- Spider-Man PS5 (exclusivo)

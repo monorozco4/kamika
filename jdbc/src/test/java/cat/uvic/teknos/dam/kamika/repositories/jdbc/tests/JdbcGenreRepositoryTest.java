@@ -8,7 +8,6 @@ import cat.uvic.teknos.dam.kamika.repositories.jdbc.exceptions.CrudException;
 
 import java.sql.Connection;
 import java.sql.Statement;
-
 import java.util.Optional;
 import java.util.Map;
 
@@ -19,29 +18,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * Unit test suite for the {@link JdbcGenreRepository} class.
- *
- * <p>This test class uses an in-memory H2 database to validate that all CRUD operations
- * on the Genre entity behave as expected.</p>
- *
- * <p>Before each test:
- * <ul>
- *   <li>A fresh table named "GENRE" is created if it does not exist.</li>
- *   <li>The table is cleared to ensure a clean state before each test.</li>
- * </ul>
- * </p>
- */
 @ExtendWith(LoadDatabaseExtension.class)
 class JdbcGenreRepositoryTest {
 
     private JdbcGenreRepository genreRepository;
 
-    /**
-     * Sets up the test environment before each test method is executed.
-     *
-     * <p>Creates or clears the GENRE table and initializes a new repository instance.</p>
-     */
     @BeforeEach
     void setUp() {
         var dataSource = new SingleConnectionDataSource();
@@ -49,17 +30,31 @@ class JdbcGenreRepositoryTest {
         try (Connection connection = dataSource.getConnection();
              Statement stmt = connection.createStatement()) {
 
-            // Create table if it doesn't exist
-            stmt.execute("""
-                CREATE TABLE IF NOT EXISTS GENRE (
-                    GENRE_ID INT PRIMARY KEY AUTO_INCREMENT,
-                    NAME VARCHAR(50) NOT NULL,
-                    DESCRIPTION VARCHAR(100)
-                )
-            """);
-
-            // Clear table before each test
+            stmt.execute("DELETE FROM GAME_EDITION");
+            stmt.execute("DELETE FROM GAME_CONSOLE");
+            stmt.execute("DELETE FROM GAME");
             stmt.execute("DELETE FROM GENRE");
+
+            stmt.execute("""
+        CREATE TABLE IF NOT EXISTS GENRE (
+            GENRE_ID INT PRIMARY KEY AUTO_INCREMENT,
+            NAME VARCHAR(50) NOT NULL,
+            DESCRIPTION VARCHAR(100)
+        )
+    """);
+
+            stmt.execute("""
+        CREATE TABLE IF NOT EXISTS GAME (
+            GAME_ID INT PRIMARY KEY AUTO_INCREMENT,
+            TITLE VARCHAR(100) NOT NULL,
+            RELEASE_DATE DATE,
+            DEVELOPER_ID INT NOT NULL,
+            PUBLISHER_ID INT NOT NULL,
+            GENRE_ID INT,
+            PEGI_RATING VARCHAR(10),
+            IS_MULTIPLAYER TINYINT
+        )
+    """);
 
         } catch (Exception e) {
             fail("Error cleaning up database before test", e);
@@ -68,16 +63,6 @@ class JdbcGenreRepositoryTest {
         genreRepository = new JdbcGenreRepository(dataSource);
     }
 
-    /**
-     * Tests that a newly saved genre can be retrieved by its ID.
-     *
-     * <p>Verifies that:
-     * <ul>
-     *   <li>The saved genre has a valid ID assigned.</li>
-     *   <li>The genre retrieved using findById() matches the original data.</li>
-     * </ul>
-     * </p>
-     */
     @Test
     void shouldSaveAndFindGenreById() {
         Genre genre = new GenreImpl();
@@ -93,12 +78,6 @@ class JdbcGenreRepositoryTest {
         assertEquals("Fast-paced games", found.get().getDescription());
     }
 
-    /**
-     * Tests that updating a genre with an existing ID modifies its stored data.
-     *
-     * <p>Verifies that after calling save() on an updated genre object,
-     * the persisted values reflect the changes.</p>
-     */
     @Test
     void shouldUpdateGenreWhenIdExists() {
         Genre genre = new GenreImpl();
@@ -121,11 +100,6 @@ class JdbcGenreRepositoryTest {
         assertEquals("Japanese role-playing game", found.get().getDescription());
     }
 
-    /**
-     * Tests that a genre can be deleted using the delete() method.
-     *
-     * <p>Verifies that after deletion, the genre is no longer present in the database.</p>
-     */
     @Test
     void shouldDeleteGenre() {
         Genre genre = new GenreImpl();
@@ -141,11 +115,6 @@ class JdbcGenreRepositoryTest {
         assertFalse(found.isPresent());
     }
 
-    /**
-     * Tests that a genre can be deleted using its ID via deleteById().
-     *
-     * <p>Verifies that the method returns true when a genre is successfully deleted.</p>
-     */
     @Test
     void shouldDeleteGenreById() {
         Genre genre = new GenreImpl();
@@ -162,9 +131,6 @@ class JdbcGenreRepositoryTest {
         assertFalse(found.isPresent());
     }
 
-    /**
-     * Tests that the count() method returns the correct number of genres in the database.
-     */
     @Test
     void shouldCountGenres() {
         Genre genre1 = new GenreImpl();
@@ -181,9 +147,6 @@ class JdbcGenreRepositoryTest {
         assertEquals(2, count);
     }
 
-    /**
-     * Tests that existsById() returns true when a genre with the given ID exists.
-     */
     @Test
     void shouldReturnTrueWhenGenreExists() {
         Genre genre = new GenreImpl();
@@ -194,17 +157,11 @@ class JdbcGenreRepositoryTest {
         assertTrue(genreRepository.existsById(saved.getId()));
     }
 
-    /**
-     * Tests that existsById() returns false when a genre with the given ID does not exist.
-     */
     @Test
     void shouldReturnFalseWhenGenreDoesNotExist() {
         assertFalse(genreRepository.existsById(999));
     }
 
-    /**
-     * Tests that findByNameIgnoreCase retrieves a genre regardless of case sensitivity.
-     */
     @Test
     void shouldFindGenreByNameIgnoreCase() {
         Genre genre = new GenreImpl();
@@ -217,21 +174,12 @@ class JdbcGenreRepositoryTest {
         assertEquals("Strategy", found.get().getName());
     }
 
-    /**
-     * Tests that countGamesPerGenre returns a map with genre IDs and their associated game counts.
-     */
     @Test
     void shouldCountGamesPerGenre() {
         Map<Integer, Long> counts = genreRepository.countGamesPerGenre();
         assertNotNull(counts);
     }
 
-    /**
-     * Tests that invalid operations throw a CrudException.
-     *
-     * <p>In this case, attempting to find a genre with a negative ID should result
-     * in a CrudException being thrown.</p>
-     */
     @Test
     void shouldThrowCrudExceptionOnInvalidOperation() {
         assertThrows(CrudException.class, () -> genreRepository.findById(-1));

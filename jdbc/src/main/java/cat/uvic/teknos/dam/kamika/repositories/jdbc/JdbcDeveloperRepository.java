@@ -190,6 +190,23 @@ public class JdbcDeveloperRepository implements DeveloperRepository {
         return 0;
     }
 
+    @Override
+    public Set<Developer> findAll() {
+        Set<Developer> developers = new HashSet<>();
+        String sql = "SELECT * FROM DEVELOPER";
+        try (Connection conn = dataSource.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                developers.add(mapToEntity(rs));
+            }
+        } catch (SQLException e) {
+            throw new CrudException("Error retrieving all developers", e);
+        }
+        return developers;
+    }
+
     /**
      * Maps a ResultSet row to a Developer entity.
      *

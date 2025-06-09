@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://xmlns.jcp.org/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence
+                                 http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd"
+             version="2.1">
+    <persistence-unit name="kamika_test" transaction-type="RESOURCE_LOCAL">
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+
+        <class>cat.uvic.teknos.dam.kamika.model.jpa.JpaConsole</class>
+        <class>cat.uvic.teknos.dam.kamika.model.jpa.JpaDeveloper</class>
+        <class>cat.uvic.teknos.dam.kamika.model.jpa.JpaGame</class>
+        <class>cat.uvic.teknos.dam.kamika.model.jpa.JpaGameConsole</class>
+        <class>cat.uvic.teknos.dam.kamika.model.jpa.JpaGameEdition</class>
+        <class>cat.uvic.teknos.dam.kamika.model.jpa.JpaGenre</class>
+        <class>cat.uvic.teknos.dam.kamika.model.jpa.JpaPublisher</class>
+
+        <properties>
+            <!-- JDBC connection properties, MySQL Connection -->
+            <property name="jakarta.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
+            <property name="jakarta.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/VideoGames_Test"/>
+            <property name="jakarta.persistence.jdbc.user" value="root"/>
+            <property name="jakarta.persistence.jdbc.password" value="rootpassword"/>
+
+            <!-- Hibernate -->
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>
+            <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
+            <property name="hibernate.show_sql" value="true"/>
+            <property name="hibernate.format_sql" value="true"/>
+        </properties>
+    </persistence-unit>
+</persistence>

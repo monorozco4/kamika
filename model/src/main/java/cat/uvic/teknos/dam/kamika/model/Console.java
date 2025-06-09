@@ -19,6 +19,6 @@ public interface Console {
     String getManufacturer();
     void setManufacturer(String manufacturer);
 
-    Integer getReleaseYear();
-    void setReleaseYear(Integer releaseYear);
+    int getReleaseYear();
+    void setReleaseYear(int releaseYear);
 }

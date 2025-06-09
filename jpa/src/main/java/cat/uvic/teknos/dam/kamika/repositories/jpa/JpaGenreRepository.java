@@ -1,13 +1,17 @@
 package cat.uvic.teknos.dam.kamika.repositories.jpa;
 
 import cat.uvic.teknos.dam.kamika.model.Genre;
+import cat.uvic.teknos.dam.kamika.model.jpa.JpaGenre;
 import cat.uvic.teknos.dam.kamika.repositories.GenreRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 public class JpaGenreRepository implements GenreRepository {
 
@@ -65,4 +69,23 @@ public class JpaGenreRepository implements GenreRepository {
         return Map.of();
     }
 
+    @Override
+    public Optional<Genre> findByName(String name) {
+        var query = entityManager.createQuery(
+                "SELECT g FROM JpaGenre g WHERE LOWER(g.name) = LOWER(:name)", Genre.class);
+        query.setParameter("name", name);
+        var resultList = query.getResultList();
+        if (resultList.isEmpty()) {
+            return Optional.empty();
+        }
+        return Optional.of(resultList.getFirst());
+    }
+
+    @Override
+    public Set<Genre> findAll() {
+        return JPAUtil.executeQuery(entityManager -> {
+            TypedQuery<JpaGenre> query = entityManager.createQuery("SELECT g FROM JpaGenre g", JpaGenre.class);
+            return new HashSet<>(query.getResultList());
+        });
+    }
 }

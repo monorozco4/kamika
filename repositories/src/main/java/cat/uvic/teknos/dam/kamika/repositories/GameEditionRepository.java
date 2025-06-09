@@ -13,6 +13,7 @@ package cat.uvic.teknos.dam.kamika.repositories;
 import cat.uvic.teknos.dam.kamika.model.GameEdition;
 
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * Repository interface for managing GameEdition entities.
@@ -49,9 +50,8 @@ public interface GameEditionRepository {
      *
      * @param gameId      the game ID
      * @param editionName the edition name
-     * @return true if the game edition was deleted, false if not found
      */
-    boolean deleteByGameIdAndEditionName(int gameId, String editionName);
+    void deleteByGameIdAndEditionName(int gameId, String editionName);
 
     /**
      * Count the total number of game editions.
@@ -68,4 +68,21 @@ public interface GameEditionRepository {
      * @return true if the game edition exists, false otherwise
      */
     boolean existsByGameIdAndEditionName(int gameId, String editionName);
+
+    Optional<GameEdition> findByEditionName(String editionName);
+
+    /**
+     * Returns all game editions.
+     *
+     * @return a set of all game editions
+     */
+    Set<GameEdition> findAll();
+
+    /**
+     * Find a game edition by its ID.
+     *
+     * @param id the ID of the game edition
+     * @return an Optional containing the game edition if found, empty otherwise
+     */
+    Optional<GameEdition> findById(int id);
 }

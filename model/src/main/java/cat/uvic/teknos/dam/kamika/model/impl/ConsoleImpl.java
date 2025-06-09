@@ -49,12 +49,12 @@ public class ConsoleImpl implements Console {
     }
 
     @Override
-    public Integer getReleaseYear() {
+    public int getReleaseYear() {
         return releaseYear;
     }
 
     @Override
-    public void setReleaseYear(Integer releaseYear) {
+    public void setReleaseYear(int releaseYear) {
         this.releaseYear = releaseYear;
     }
 

@@ -5,7 +5,6 @@ import cat.uvic.teknos.dam.kamika.model.impl.GameConsoleImpl;
 import cat.uvic.teknos.dam.kamika.repositories.jdbc.JdbcGameConsoleRepository;
 import cat.uvic.teknos.dam.kamika.repositories.jdbc.datasources.SingleConnectionDataSource;
 import cat.uvic.teknos.dam.kamika.repositories.jdbc.exceptions.CrudException;
-
 import cat.uvic.teknos.dam.kamika.repositories.jdbc.jupiter.LoadDatabaseExtension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,20 +29,77 @@ class JdbcGameConsoleRepositoryTest {
         try (Connection connection = dataSource.getConnection();
              Statement stmt = connection.createStatement()) {
 
-            // Crear tabla si no existe
             stmt.execute("""
-                CREATE TABLE IF NOT EXISTS GAME_CONSOLE (
-                    GAME_ID INT NOT NULL,
-                    CONSOLE_ID INT NOT NULL,
-                    RELEASE_DATE DATE,
-                    IS_EXCLUSIVE BOOLEAN,
-                    RESOLUTION VARCHAR(255),
-                    PRIMARY KEY (GAME_ID, CONSOLE_ID)
-                )
-            """);
+            CREATE TABLE IF NOT EXISTS DEVELOPER (
+                DEVELOPER_ID INT PRIMARY KEY AUTO_INCREMENT,
+                NAME VARCHAR(100)
+            )
+        """);
+            stmt.execute("""
+            CREATE TABLE IF NOT EXISTS PUBLISHER (
+                PUBLISHER_ID INT PRIMARY KEY AUTO_INCREMENT,
+                NAME VARCHAR(100),
+                DEVELOPER_ID INT,
+                FOREIGN KEY (DEVELOPER_ID) REFERENCES DEVELOPER(DEVELOPER_ID)
+            )
+        """);
+            stmt.execute("""
+            CREATE TABLE IF NOT EXISTS GAME (
+                GAME_ID INT PRIMARY KEY,
+                TITLE VARCHAR(255),
+                RELEASE_DATE DATE,
+                DEVELOPER_ID INT NOT NULL,
+                PUBLISHER_ID INT NOT NULL,
+                PEGI_RATING VARCHAR(10),
+                IS_MULTIPLAYER BOOLEAN,
+                FOREIGN KEY (DEVELOPER_ID) REFERENCES DEVELOPER(DEVELOPER_ID),
+                FOREIGN KEY (PUBLISHER_ID) REFERENCES PUBLISHER(PUBLISHER_ID)
+            )
+        """);
+            stmt.execute("""
+            CREATE TABLE IF NOT EXISTS CONSOLE (
+                CONSOLE_ID INT PRIMARY KEY
+            )
+        """);
+            stmt.execute("""
+            CREATE TABLE IF NOT EXISTS GAME_CONSOLE (
+                GAME_CONSOLE_ID INT AUTO_INCREMENT PRIMARY KEY,
+                GAME_ID INT NOT NULL,
+                CONSOLE_ID INT NOT NULL,
+                RELEASE_DATE DATE,
+                IS_EXCLUSIVE BOOLEAN,
+                RESOLUTION VARCHAR(255),
+                UNIQUE (GAME_ID, CONSOLE_ID),
+                FOREIGN KEY (GAME_ID) REFERENCES GAME(GAME_ID),
+                FOREIGN KEY (CONSOLE_ID) REFERENCES CONSOLE(CONSOLE_ID)
+            )
+        """);
 
-            // Limpiar tabla antes de cada test
-            stmt.execute("DELETE FROM GAME_CONSOLE");
+            // Limpiar tablas y reiniciar autoincrementales
+            stmt.execute("SET FOREIGN_KEY_CHECKS=0");
+            stmt.execute("TRUNCATE TABLE GAME_CONSOLE");
+            stmt.execute("TRUNCATE TABLE GAME");
+            stmt.execute("TRUNCATE TABLE CONSOLE");
+            stmt.execute("TRUNCATE TABLE PUBLISHER");
+            stmt.execute("TRUNCATE TABLE DEVELOPER");
+            stmt.execute("SET FOREIGN_KEY_CHECKS=1");
+
+            // Insertar desarrolladores
+            for (int i = 1; i <= 7; i++) {
+                stmt.execute("INSERT INTO DEVELOPER (NAME) VALUES ('Dev" + i + "')");
+            }
+            // Insertar publishers con los IDs correctos
+            for (int i = 1; i <= 7; i++) {
+                stmt.execute("INSERT INTO PUBLISHER (NAME, DEVELOPER_ID) VALUES ('Pub" + i + "', " + i + ")");
+            }
+            // Insertar juegos con los IDs requeridos
+            for (int i = 1; i <= 7; i++) {
+                stmt.execute("INSERT INTO GAME (GAME_ID, TITLE, DEVELOPER_ID, PUBLISHER_ID) VALUES (" + i + ", 'Juego " + i + "', " + i + ", " + i + ")");
+            }
+            // Insertar consolas con NAME obligatorio
+            for (int i : new int[]{100,200,300,400,500,600,700}) {
+                stmt.execute("INSERT INTO CONSOLE (CONSOLE_ID, NAME) VALUES (" + i + ", 'Console" + i + "')");
+            }
 
         } catch (Exception e) {
             fail("Error setting up database", e);
@@ -67,6 +123,7 @@ class JdbcGameConsoleRepositoryTest {
         assertTrue(found.isPresent());
         assertEquals("1920x1080", found.get().getResolution());
         assertTrue(found.get().isExclusive());
+        assertTrue(found.get().getGameConsoleId() > 0);
     }
 
     @Test
@@ -151,8 +208,28 @@ class JdbcGameConsoleRepositoryTest {
     @Test
     void shouldThrowCrudExceptionOnInvalidOperation() {
         GameConsole invalid = new GameConsoleImpl();
-        invalid.setGameId(-1); // ID inválido
+        invalid.setGameId(-1);
 
         assertThrows(CrudException.class, () -> repository.save(invalid));
+    }
+
+    @Test
+    void shouldFindAndDeleteByGameConsoleId() {
+        GameConsole gc = new GameConsoleImpl();
+        gc.setGameId(1);
+        gc.setConsoleId(100);
+        gc.setResolution("test");
+        repository.save(gc);
+
+        int id = gc.getGameConsoleId();
+        assertTrue(id > 0);
+
+        Optional<GameConsole> found = repository.findByGameConsoleId(id);
+        assertTrue(found.isPresent());
+        assertEquals("test", found.get().getResolution());
+
+        boolean deleted = repository.deleteByGameConsoleId(id);
+        assertTrue(deleted);
+        assertFalse(repository.findByGameConsoleId(id).isPresent());
     }
 }

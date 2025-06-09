@@ -1,8 +1,10 @@
 package cat.uvic.teknos.dam.kamika.repositories;
 
+import cat.uvic.teknos.dam.kamika.model.Console;
 import cat.uvic.teknos.dam.kamika.model.Genre;
 
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * Repository interface for managing Genre entities.
@@ -56,8 +58,6 @@ public interface GenreRepository {
      */
     boolean existsById(int id);
 
-    // Custom methods
-
     /**
      * Find genres by name (exact match, case-insensitive).
      *
@@ -73,4 +73,8 @@ public interface GenreRepository {
      * @return a map with genre IDs as keys and the count of associated games as values
      */
     java.util.Map<Integer, Long> countGamesPerGenre();
+
+    Optional<Genre> findByName(String name);
+
+    Set<Genre> findAll();
 }

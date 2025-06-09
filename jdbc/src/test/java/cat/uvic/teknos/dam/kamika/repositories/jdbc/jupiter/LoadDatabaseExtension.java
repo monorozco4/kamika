@@ -22,7 +22,6 @@ public class LoadDatabaseExtension
                 started = true;
                 SchemaLoader.loadScript("/schema.sql");
                 SchemaLoader.loadScript("/data.sql");
-
                 //context.getRoot().getStore(GLOBAL).put("any unique name", this);
             }
         } finally {

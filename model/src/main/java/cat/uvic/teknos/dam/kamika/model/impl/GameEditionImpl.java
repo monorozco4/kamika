@@ -3,6 +3,7 @@ package cat.uvic.teknos.dam.kamika.model.impl;
 import cat.uvic.teknos.dam.kamika.model.Game;
 import cat.uvic.teknos.dam.kamika.model.GameEdition;
 
+import java.time.LocalDate;
 import java.util.Objects;
 
 /**
@@ -12,9 +13,11 @@ import java.util.Objects;
 public class GameEditionImpl implements GameEdition {
 
     private Game game;
+    private int id;
     private String editionName;
     private String specialContent;
     private double price;
+    private LocalDate releaseDate;
 
     @Override
     public Game getGame() {
@@ -54,6 +57,26 @@ public class GameEditionImpl implements GameEdition {
     @Override
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    @Override
+    public int getId() {
+        return id;
+    }
+
+    @Override
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    @Override
+    public LocalDate getReleaseDate() {
+        return releaseDate;
+    }
+
+    @Override
+    public void setReleaseDate(LocalDate releaseDate) {
+        this.releaseDate = releaseDate;
     }
 
     /**

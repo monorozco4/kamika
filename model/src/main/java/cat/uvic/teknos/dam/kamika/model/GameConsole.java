@@ -11,6 +11,19 @@ import java.time.LocalDate;
  */
 public interface GameConsole {
 
+    // language=java
+    /**
+     * Gets the unique ID for the GameConsole relation.
+     * @return the GameConsole ID
+     */
+    int getGameConsoleId();
+
+    /**
+     * Sets the unique ID for the GameConsole relation.
+     * @param id the GameConsole ID to set
+     */
+    void setGameConsoleId(int id);
+
     /**
      * Gets the game ID.
      * @return the game ID

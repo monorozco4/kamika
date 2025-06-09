@@ -1,11 +1,15 @@
 package cat.uvic.teknos.dam.kamika.model.jpa;
 
-import cat.uvic.teknos.dam.kamika.model.Game;
-import jakarta.persistence.*;
 import cat.uvic.teknos.dam.kamika.model.Genre;
+import jakarta.persistence.*;
+import lombok.*;
 
-import java.util.Set;
-
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(of = "id")
+@ToString
 @Entity
 @Table(name = "GENRE")
 public class JpaGenre implements Genre {
@@ -13,15 +17,13 @@ public class JpaGenre implements Genre {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "GENRE_ID")
-    private Integer id;
+    private int id;
 
-    @Column(name = "NAME", nullable = false, length = 50, unique = true)
+    @Column(name = "NAME", length = 100, nullable = false)
     private String name;
 
-    @Column(name = "DESCRIPTION", length = 100)
+    @Column(name = "DESCRIPTION", length = 255)
     private String description;
-
-    // Getters y setters
 
     @Override
     public int getId() {
@@ -30,7 +32,7 @@ public class JpaGenre implements Genre {
 
     @Override
     public void setId(int id) {
-
+        this.id = id;
     }
 
     @Override
@@ -51,20 +53,5 @@ public class JpaGenre implements Genre {
     @Override
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    // Equals & HashCode (opcional pero recomendado para evitar problemas con Hibernate)
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof JpaGenre genre)) return false;
-
-        return getName().equals(genre.getName());
-    }
-
-    @Override
-    public int hashCode() {
-        return getName().hashCode();
     }
 }

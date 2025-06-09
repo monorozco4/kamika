@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/jdbc/kamika.jdbc.test.iml" filepath="$PROJECT_DIR$/.idea/modules/jdbc/kamika.jdbc.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/jpa/kamika.jpa.main.iml" filepath="$PROJECT_DIR$/.idea/modules/jpa/kamika.jpa.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/jpa/kamika.jpa.test.iml" filepath="$PROJECT_DIR$/.idea/modules/jpa/kamika.jpa.test.iml" />
     </modules>
   </component>
 </project>

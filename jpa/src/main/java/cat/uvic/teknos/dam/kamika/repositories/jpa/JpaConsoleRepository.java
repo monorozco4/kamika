@@ -7,7 +7,9 @@ import cat.uvic.teknos.dam.kamika.exceptions.CrudException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 public class JpaConsoleRepository implements ConsoleRepository {
 
@@ -119,6 +121,14 @@ public class JpaConsoleRepository implements ConsoleRepository {
             query.setParameter("id", id);
             Long count = query.getSingleResult();
             return count > 0;
+        });
+    }
+
+    @Override
+    public Set<Console> findAll() {
+        return JPAUtil.executeQuery(entityManager -> {
+            TypedQuery<JpaConsole> query = entityManager.createQuery("SELECT c FROM JpaConsole c", JpaConsole.class);
+            return new HashSet<>(query.getResultList());
         });
     }
 }
