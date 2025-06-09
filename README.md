@@ -17,13 +17,14 @@ for new games you want to play! Search for new games to play and have fun with!
 
 ## VERSIONS
 
-| Version | Description                     |
-|---------|---------------------------------|
-| 1.0.0   | First Version                   |
-| 1.0.1   | README added                    |
-| 1.0.2   | Interfaces added                |
-| 1.0.3   | Repositories added              |
+| Version | Description                      |
+|---------|----------------------------------|
+| 1.0.0   | First Version                    |
+| 1.0.1   | README added                     |
+| 1.0.2   | Interfaces added                 |
+| 1.0.3   | Repositories added               |
 | 1.0.4   | Models and implementations added |
-| 1.0.5   | JDBC added and tested           |
-| 1.0.5   | JPA added and tested            |
-| 1.1.0   | App available                   |
+| 1.0.5   | JDBC added and tested            |
+| 1.0.5   | JPA added and tested             |
+| 1.0.6   | Minor improvements                |
+| 1.1.0   | App available                    |
