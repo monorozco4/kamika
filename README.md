@@ -28,3 +28,4 @@ for new games you want to play! Search for new games to play and have fun with!
 | 1.0.5   | JPA added and tested             |
 | 1.0.6   | Minor improvements               |
 | 1.1.0   | App available                    |
+| 2.0.0   | Client and server added          |
