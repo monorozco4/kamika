@@ -1,0 +1,15 @@
+cat.uvic.teknos.dam.kamika.app
+cat.uvic.teknos.dam.kamika.app.exceptions
+cat.uvic.teknos.dam.kamika.app.manager
+cat.uvic.teknos.dam.kamika.exceptions
+cat.uvic.teknos.dam.kamika.model
+cat.uvic.teknos.dam.kamika.model.impl
+cat.uvic.teknos.dam.kamika.model.jpa
+cat.uvic.teknos.dam.kamika.repositories
+cat.uvic.teknos.dam.kamika.repositories.jdbc
+cat.uvic.teknos.dam.kamika.repositories.jdbc.datasources
+cat.uvic.teknos.dam.kamika.repositories.jdbc.exceptions
+cat.uvic.teknos.dam.kamika.repositories.jdbc.jupiter
+cat.uvic.teknos.dam.kamika.repositories.jdbc.model
+cat.uvic.teknos.dam.kamika.repositories.jdbc.tests
+cat.uvic.teknos.dam.kamika.repositories.jpa

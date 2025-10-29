@@ -9,17 +9,32 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Scanner;
 
+/**
+ * Manages game edition operations including display, creation, viewing, and deletion of game editions.
+ * Provides a console-based interface for managing different editions of games.
+ */
 public class GameEditionManager {
     private final ModelFactory modelFactory;
     private final RepositoryFactory repositoryFactory;
     private final Scanner scanner;
 
+    /**
+     * Constructs a GameEditionManager with the necessary dependencies.
+     *
+     * @param scanner the Scanner instance for user input
+     * @param repositoryFactory the factory for creating game edition repositories
+     * @param modelFactory the factory for creating game edition model instances
+     */
     public GameEditionManager(Scanner scanner, RepositoryFactory repositoryFactory, ModelFactory modelFactory) {
         this.scanner = scanner;
         this.repositoryFactory = repositoryFactory;
         this.modelFactory = modelFactory;
     }
 
+    /**
+     * Displays all game editions in a formatted ASCII table.
+     * The table includes columns for ID, Edition Name, Game ID, and Price.
+     */
     private void displayAllEditions() {
         var editions = repositoryFactory.getGameEditionRepository().findAll();
         System.out.println(AsciiTable.getTable(editions, Arrays.asList(
@@ -30,6 +45,12 @@ public class GameEditionManager {
         )));
     }
 
+    /**
+     * Runs the game edition management console interface.
+     * Provides a menu with options to list, view, create, and delete game editions.
+     *
+     * @throws SQLException if a database access error occurs during operations
+     */
     public void run() throws SQLException {
         while (true) {
             System.out.println("Game Edition Management:");

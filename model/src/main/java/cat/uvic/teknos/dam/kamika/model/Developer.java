@@ -22,5 +22,4 @@ public interface Developer {
 
     int getFoundationYear();
     void setFoundationYear(int foundationYear);
-
 }

@@ -9,17 +9,32 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Scanner;
 
+/**
+ * Manages developer-related operations including displaying, creating, viewing, and deleting developers.
+ * Provides a console-based interface for developer management.
+ */
 public class DeveloperManager {
     private final ModelFactory modelFactory;
     private final RepositoryFactory repositoryFactory;
     private final Scanner scanner;
 
+    /**
+     * Constructs a DeveloperManager with the specified dependencies.
+     *
+     * @param scanner the Scanner instance for user input
+     * @param repositoryFactory the RepositoryFactory for accessing developer repositories
+     * @param modelFactory the ModelFactory for creating new developer instances
+     */
     public DeveloperManager(Scanner scanner, RepositoryFactory repositoryFactory, ModelFactory modelFactory) {
         this.scanner = scanner;
         this.repositoryFactory = repositoryFactory;
         this.modelFactory = modelFactory;
     }
 
+    /**
+     * Displays all developers in a formatted ASCII table.
+     * The table includes columns for ID, Name, Country, and Foundation Year.
+     */
     private void displayAllDevelopers() {
         var developers = repositoryFactory.getDeveloperRepository().findAll();
         System.out.println(AsciiTable.getTable(developers, Arrays.asList(
@@ -30,6 +45,12 @@ public class DeveloperManager {
         )));
     }
 
+    /**
+     * Runs the developer management console interface.
+     * Provides a menu with options to list, view, create, and delete developers.
+     *
+     * @throws SQLException if a database access error occurs
+     */
     public void run() throws SQLException {
         while (true) {
             System.out.println("Developer Management:");

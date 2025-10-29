@@ -9,11 +9,41 @@ import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 import java.util.Scanner;
 
+/**
+ * Main application class that serves as the entry point for the program.
+ * This class now includes functionality to switch between JPA and JDBC implementations at runtime.
+ */
 public class App {
+    /**
+     * Main method that starts the application.
+     * @param args Command line arguments (not used)
+     * @throws IOException If an I/O error occurs
+     * @throws ClassNotFoundException If a class cannot be found
+     * @throws InvocationTargetException If a method invocation fails
+     * @throws InstantiationException If an object cannot be instantiated
+     * @throws IllegalAccessException If access to a field or method is denied
+     * @throws SQLException If a database access error occurs
+     */
     public static void main(String[] args) throws IOException, ClassNotFoundException, InvocationTargetException, InstantiationException, IllegalAccessException, SQLException {
         var scanner = new Scanner(System.in);
 
         Banner.show();
+
+        // Ask user for persistence implementation
+        System.out.println("Select persistence implementation:");
+        System.out.println("1 - JDBC (default)");
+        System.out.println("2 - JPA");
+        System.out.print("Enter your choice: ");
+        String persistenceChoice = scanner.nextLine();
+
+        // Set system property based on user choice
+        if ("2".equals(persistenceChoice)) {
+            System.setProperty("persistence.implementation", "jpa");
+            System.out.println("Using JPA implementation");
+        } else {
+            System.setProperty("persistence.implementation", "jdbc");
+            System.out.println("Using JDBC implementation");
+        }
 
         var diManager = new DIManager();
         RepositoryFactory repositoryFactory = diManager.get("repository_factory", RepositoryFactory.class);

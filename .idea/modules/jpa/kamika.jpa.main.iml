@@ -5,16 +5,4 @@
       <sourceFolder url="file://$MODULE_DIR$/../../../jpa/build/generated/sources/annotationProcessor/java/main" isTestSource="false" generated="true" />
     </content>
   </component>
-  <component name="FacetManager">
-    <facet type="jpa" name="JPA">
-      <configuration>
-        <setting name="validation-enabled" value="true" />
-        <datasource-mapping>
-          <factory-entry name="kamika" />
-        </datasource-mapping>
-        <naming-strategy-map />
-        <deploymentDescriptor name="persistence.xml" url="file://$MODULE_DIR$/../../../jpa/src/main/resources/META-INF/persistence.xml" />
-      </configuration>
-    </facet>
-  </component>
 </module>

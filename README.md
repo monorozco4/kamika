@@ -26,5 +26,5 @@ for new games you want to play! Search for new games to play and have fun with!
 | 1.0.4   | Models and implementations added |
 | 1.0.5   | JDBC added and tested            |
 | 1.0.5   | JPA added and tested             |
-| 1.0.6   | Minor improvements                |
+| 1.0.6   | Minor improvements               |
 | 1.1.0   | App available                    |

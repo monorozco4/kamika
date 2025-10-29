@@ -10,17 +10,32 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.Scanner;
 
+/**
+ * Provides management operations for video game consoles through a console-based interface.
+ * Allows listing, viewing, creating, and deleting console records.
+ */
 public class ConsoleManager {
     private final ModelFactory modelFactory;
     private final RepositoryFactory repositoryFactory;
     private final Scanner scanner;
 
+    /**
+     * Constructs a ConsoleManager with the necessary dependencies.
+     *
+     * @param scanner the Scanner instance for reading user input
+     * @param repositoryFactory the factory for creating console repositories
+     * @param modelFactory the factory for creating console model instances
+     */
     public ConsoleManager(Scanner scanner, RepositoryFactory repositoryFactory, ModelFactory modelFactory) {
         this.scanner = scanner;
         this.repositoryFactory = repositoryFactory;
         this.modelFactory = modelFactory;
     }
 
+    /**
+     * Displays all consoles in a formatted ASCII table.
+     * The table includes columns for ID, Name, Manufacturer, and Release Year.
+     */
     private void displayAllConsoles() {
         var consoles = repositoryFactory.getConsoleRepository().findAll();
         System.out.println(AsciiTable.getTable(consoles, Arrays.asList(
@@ -31,6 +46,12 @@ public class ConsoleManager {
         )));
     }
 
+    /**
+     * Runs the console management interface with a menu-driven approach.
+     * Handles user input and executes corresponding operations for console management.
+     *
+     * @throws SQLException if a database access error occurs during operations
+     */
     public void run() throws SQLException {
         while (true) {
             System.out.println("Console Management:");
