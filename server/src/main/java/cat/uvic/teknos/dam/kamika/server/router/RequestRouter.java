@@ -10,10 +10,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Routes HTTP requests to the appropriate controller based on the resource path.
- * This version uses a dynamic map to register controllers and returns full RawHttpResponse objects.
- * @author Montse
- * @version 2.0.0
+ * Routes HTTP requests to the appropriate controller or handles
+ * special protocol messages like DISCONNECT.
+ * @author Your Name
+ * @version 2.1 // Added DISCONNECT handling
  */
 public class RequestRouter {
     private final Map<String, Controller> controllers = new HashMap<>();
@@ -29,13 +29,22 @@ public class RequestRouter {
     }
 
     /**
-     * Routes the given request to the correct controller.
+     * Routes the given request to the correct handler.
+     * It checks for special protocol messages before attempting to route to a controller.
      * @param request The incoming HTTP request.
-     * @return The HTTP response from the controller, or a 404 response if no route is found.
-     * @throws Exception if the controller throws an error.
+     * @return The HTTP response to send to the client.
+     * @throws Exception if an error occurs during response generation.
      */
     public RawHttpResponse<?> route(RawHttpRequest request) throws Exception {
+        String method = request.getMethod();
         String path = request.getUri().getPath();
+
+        // Handle the special inactivity disconnect message
+        if ("POST".equalsIgnoreCase(method) && "/disconnect".equals(path)) {
+            return handleDisconnect();
+        }
+
+        // --- Standard Resource Routing ---
 
         // Simple routing: get the first part of the path (e.g., /developers/1 -> developers)
         String[] pathParts = path.split("/");
@@ -55,6 +64,33 @@ public class RequestRouter {
         }
     }
 
+    /**
+     * Handles the graceful disconnect request from an inactive client.
+     * Sends an "ACK" acknowledgement, waits 1 second (as required),
+     * and then returns the response, which allows the ClientHandler to close.
+     * @return A 200 OK response with "ACK" in the body.
+     */
+    private RawHttpResponse<?> handleDisconnect() {
+        String ackBody = "ACK";
+
+        try {
+            // As per requirements, wait 1 second before closing
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt(); // Restore the interrupted status
+        }
+
+        return http.parseResponse(
+                "HTTP/1.1 200 OK\r\n" +
+                        "Content-Type: text/plain\r\n" +
+                        "Content-Length: " + ackBody.length()
+        ).withBody(new StringBody(ackBody));
+    }
+
+    /**
+     * Creates a standard HTTP 404 Not Found response.
+     * @return A {@link RawHttpResponse} with a 404 status and a JSON error body.
+     */
     private RawHttpResponse<?> createNotFoundResponse() {
         String body = "{\"error\": \"Not Found\", \"message\": \"The requested resource was not found.\"}";
         return http.parseResponse(

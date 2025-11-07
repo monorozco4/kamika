@@ -5,24 +5,42 @@ import cat.uvic.teknos.dam.kamika.client.exceptions.ClientException;
 import cat.uvic.teknos.dam.kamika.model.ModelFactory;
 import cat.uvic.teknos.dam.kamika.model.Developer;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Handles the main logic and user interface for the console client application.
- * Dependencies are injected via the constructor for better testability.
+ * Dependencies are injected for testability.
+ * Includes an inactivity monitor to automatically disconnect after a timeout.
  * @author Your Name
- * @version 1.6 // Refactored for DI
+ * @version 2.0 // Added Inactivity Monitor
  */
 public class Client {
-    private final Scanner scanner;
-    private final DeveloperApiClient developerApi;
+
+    // Dependencies injected via constructor
+    private final Scanner scanner; // Used for parsing user input strings
     private final ModelFactory modelFactory;
+    private final DeveloperApiClient developerApi;
+
+    // Internal components for non-blocking input and inactivity timer
+    private final BufferedReader userIn = new BufferedReader(new InputStreamReader(System.in));
+    private final ScheduledExecutorService inactivityScheduler;
+    private ScheduledFuture<?> inactivityFuture; // Holds the scheduled disconnect task
+
+    // 2 minutes in milliseconds
+    private static final long INACTIVITY_TIMEOUT_MS = 120_000;
 
     /**
      * Constructs the client application with its required dependencies.
-     * @param scanner The Scanner instance for user input.
+     * @param scanner The Scanner instance for parsing user input.
      * @param modelFactory The factory for creating model objects.
      * @param developerApi The client for communicating with the server API.
      */
@@ -30,18 +48,56 @@ public class Client {
         this.scanner = scanner;
         this.modelFactory = modelFactory;
         this.developerApi = developerApi;
+
+        // Create a daemon thread for the inactivity monitor
+        this.inactivityScheduler = Executors.newSingleThreadScheduledExecutor(runnable -> {
+            Thread t = new Thread(runnable, "InactivityMonitorThread");
+            t.setDaemon(true);
+            return t;
+        });
     }
 
     /**
-     * Starts the main application loop, displays the menu, processes user input,
-     * and handles potential errors.
+     * Starts the main application loop.
+     * This loop handles user input in a non-blocking way to allow
+     * the inactivity timer to function concurrently.
      */
     public void run() {
-        while (true) {
-            printMenu();
-            String choice = scanner.nextLine();
+        System.out.println("Welcome to the Kamika API Client.");
+        System.out.println("Application will auto-disconnect after 2 minutes of inactivity.");
 
-            try {
+        try {
+            while (true) {
+                printMenu();
+
+                // 1. Schedule the disconnect task
+                resetInactivityTimer();
+
+                String choice = "";
+                try {
+                    // 2. Wait for user input in a non-blocking way
+                    while (!userIn.ready()) {
+                        Thread.sleep(200); // Poll every 200ms
+                    }
+                    choice = userIn.readLine(); // Read the full line
+
+                } catch (IOException e) {
+                    System.err.println("\n[INPUT ERROR] " + e.getMessage());
+                    continue; // Continue loop
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    System.out.println("Main input thread interrupted, shutting down.");
+                    break; // Exit loop
+                }
+
+                // 3. If we get here, user provided input. Cancel the scheduled disconnect.
+                if (inactivityFuture != null) {
+                    inactivityFuture.cancel(false);
+                }
+
+                // 4. Process the user's choice
+                if (choice == null) break; // End of stream
+
                 switch (choice.trim()) {
                     case "1" -> listAllDevelopers();
                     case "2" -> getDeveloperById();
@@ -50,17 +106,69 @@ public class Client {
                     case "5" -> deleteDeveloper();
                     case "0" -> {
                         System.out.println("Exiting application. Goodbye!");
-                        return;
+                        shutdown();
+                        return; // Exit run() method
                     }
                     default -> System.out.println("Invalid option, please try again.");
                 }
-            } catch (ClientException e) {
-                System.err.println("\n[API ERROR] " + e.getMessage());
-            } catch (NumberFormatException e) {
-                System.err.println("\n[INPUT ERROR] Invalid number format. Please enter a valid integer.");
-            } catch (Exception e) {
-                System.err.println("\n[UNEXPECTED ERROR] " + e.getMessage());
             }
+        } catch (ClientException e) {
+            System.err.println("\n[API ERROR] " + e.getMessage());
+        } catch (Exception e) {
+            System.err.println("\n[UNEXPECTED ERROR] " + e.getMessage());
+            e.printStackTrace(System.err);
+        } finally {
+            shutdown();
+        }
+    }
+
+    /**
+     * Resets the 2-minute inactivity timer.
+     * This is called before waiting for new user input.
+     */
+    private void resetInactivityTimer() {
+        // Cancel any previous timer
+        if (inactivityFuture != null) {
+            inactivityFuture.cancel(false);
+        }
+        // Schedule a new disconnect task
+        inactivityFuture = inactivityScheduler.schedule(
+                this::handleInactivityDisconnect,
+                INACTIVITY_TIMEOUT_MS,
+                TimeUnit.MILLISECONDS
+        );
+    }
+
+    /**
+     * This method is called by the inactivityScheduler if the timeout is reached.
+     * It sends a disconnect message to the server and exits the application.
+     */
+    private void handleInactivityDisconnect() {
+        System.out.println("\n\n[INACTIVITY] 2 minutes of inactivity detected. Sending disconnect message...");
+        try {
+            if (developerApi.sendDisconnect()) {
+                System.out.println("[INACTIVITY] Server acknowledged disconnect. Client exiting.");
+            } else {
+                System.out.println("[INACTIVITY] Server did not acknowledge disconnect. Exiting anyway.");
+            }
+        } catch (ClientException e) {
+            System.err.println("[INACTIVITY] Error during disconnect: " + e.getMessage());
+        } finally {
+            // Force the application to exit
+            System.exit(0);
+        }
+    }
+
+    /**
+     * Cleans up resources (scheduler, input reader) before exiting.
+     */
+    private void shutdown() {
+        inactivityScheduler.shutdownNow(); // Stop the inactivity timer thread
+        try {
+            userIn.close();
+            scanner.close(); // Close the scanner we are using for parsing
+        } catch (IOException e) {
+            System.err.println("Error closing input stream: " + e.getMessage());
         }
     }
 
@@ -78,6 +186,8 @@ public class Client {
         System.out.println("0. Exit");
         System.out.print("Enter your choice: ");
     }
+
+    // --- Mètodes d'Acció (Iguals que abans) ---
 
     /**
      * Handles the "List all developers" action.
@@ -174,17 +284,12 @@ public class Client {
      */
     private void printDeveloperList(Set<Developer> developers) {
         System.out.println("--- Developer List ---");
-        if (developers == null || developers.isEmpty()) {
-            System.out.println(" (No developers to display) ");
-        } else {
-            for (Developer dev : developers) {
-                System.out.printf("ID: %d | Name: %s | Country: %s | Founded: %d%n",
-                        dev.getId(),
-                        dev.getName() != null ? dev.getName() : "N/A",
-                        dev.getCountry() != null ? dev.getCountry() : "N/A",
-                        dev.getFoundationYear()
-                );
-            }
+        for (Developer dev : developers) {
+            System.out.printf("ID: %d | Name: %s | Country: %s | Founded: %d%n",
+                    dev.getId(),
+                    dev.getName(),
+                    dev.getCountry(),
+                    dev.getFoundationYear());
         }
         System.out.println("----------------------");
     }

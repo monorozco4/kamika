@@ -1,13 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="AnalysisUIOptions">
-    <option name="ANALYZE_INJECTED_CODE" value="false" />
-  </component>
   <component name="AutoImportSettings">
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="088f3782-c2d2-4b0b-883d-631bfa3fd38e" name="Changes" comment="Added Java Code" />
+    <list default="true" id="8f9a6e03-20a9-4db8-86d8-ce59e175e59b" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/copilot.data.migration.ask.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/copilot.data.migration.ask2agent.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/copilot.data.migration.edit.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/jpa/kamika.jpa.main.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/clients/console/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/clients/console/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/clients/console/src/main/java/cat/uvic/teknos/dam/kamika/client/App.java" beforeDir="false" afterPath="$PROJECT_DIR$/clients/console/src/main/java/cat/uvic/teknos/dam/kamika/client/App.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/cat/uvic/teknos/dam/kamika/server/App.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/cat/uvic/teknos/dam/kamika/server/App.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/cat/uvic/teknos/dam/kamika/server/ClientHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/cat/uvic/teknos/dam/kamika/server/ClientHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/cat/uvic/teknos/dam/kamika/server/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/cat/uvic/teknos/dam/kamika/server/Server.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -18,87 +29,13 @@
       <ProjectState />
     </projectState>
   </component>
-  <component name="ExternalProjectsManager">
-    <system id="GRADLE">
-      <state>
-        <task path="$PROJECT_DIR$">
-          <activation />
-        </task>
-        <task path="$PROJECT_DIR$/jdbc">
-          <activation />
-        </task>
-        <task path="$PROJECT_DIR$/client">
-          <activation />
-        </task>
-        <task path="$PROJECT_DIR$/utilities">
-          <activation />
-        </task>
-        <projects_view>
-          <tree_state>
-            <expand>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="kamika" type="f1a62948:ProjectNode" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="kamika" type="f1a62948:ProjectNode" />
-                <item name="Tasks" type="e4a08cd1:TasksNode" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="kamika" type="f1a62948:ProjectNode" />
-                <item name="Tasks" type="e4a08cd1:TasksNode" />
-                <item name="build" type="c8890929:TasksNode$1" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="kamika" type="f1a62948:ProjectNode" />
-                <item name="Tasks" type="e4a08cd1:TasksNode" />
-                <item name="build setup" type="c8890929:TasksNode$1" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="kamika" type="f1a62948:ProjectNode" />
-                <item name="utilities" type="2d1252cf:ModuleNode" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="kamika" type="f1a62948:ProjectNode" />
-                <item name="utilities" type="2d1252cf:ModuleNode" />
-                <item name="Tasks" type="e4a08cd1:TasksNode" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="kamika" type="f1a62948:ProjectNode" />
-                <item name="utilities" type="2d1252cf:ModuleNode" />
-                <item name="Tasks" type="e4a08cd1:TasksNode" />
-                <item name="build" type="c8890929:TasksNode$1" />
-              </path>
-            </expand>
-            <select />
-          </tree_state>
-        </projects_view>
-      </state>
-    </system>
-  </component>
-  <component name="FileTemplateManagerImpl">
-    <option name="RECENT_TEMPLATES">
-      <list>
-        <option value="Record" />
-        <option value="package-info" />
-        <option value="Interface" />
-        <option value="Class" />
-      </list>
-    </option>
-  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
   &quot;lastFilter&quot;: {
     &quot;state&quot;: &quot;OPEN&quot;,
-    &quot;assignee&quot;: &quot;monorozco4&quot;
+    &quot;assignee&quot;: &quot;OrozcoMon&quot;
   }
 }</component>
   <component name="GithubPullRequestsUISettings">{
@@ -107,107 +44,41 @@
     &quot;accountId&quot;: &quot;cf63dffe-f901-4c42-b856-cdfe4431e7ec&quot;
   }
 }</component>
-  <component name="KotlinScriptingSettings">
-    <option name="suppressDefinitionsCheck" value="true" />
-  </component>
-  <component name="ProblemsViewState">
-    <option name="selectedTabId" value="CurrentFile" />
-  </component>
   <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
   &quot;associatedIndex&quot;: 5
 }</component>
-  <component name="ProjectId" id="2vXmxzhaA2eVOiSpE7hw1sJ8Spu" />
-  <component name="ProjectLevelVcsManager">
-    <ConfirmationsSetting value="1" id="Add" />
-  </component>
+  <component name="ProjectId" id="34yN1RGF5ku9V5vksflVi49CarY" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
-    &quot;Downloaded.Files.Path.Enabled&quot;: &quot;false&quot;,
-    &quot;Gradle.Build kamika.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.JdbcConsoleRepositoryTest.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.JdbcConsoleRepositoryTest.shouldSaveAndFindConsoleById.executor&quot;: &quot;Debug&quot;,
-    &quot;Gradle.JdbcDeveloperRepositoryTest.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.JdbcDeveloperRepositoryTest.shouldThrowCrudExceptionOnInvalidOperation.executor&quot;: &quot;Debug&quot;,
-    &quot;Gradle.JdbcGameConsoleRepositoryTest.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.JdbcGameConsoleRepositoryTest.shouldSaveAndFindGameConsoleByCompositeKey.executor&quot;: &quot;Debug&quot;,
-    &quot;Gradle.JdbcGameConsoleRepositoryTest.shouldThrowCrudExceptionOnInvalidOperation.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.JdbcGameEditionRepositoryTest.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.JdbcGameEditionRepositoryTest.shouldUpdateGameEditionWhenExists.executor&quot;: &quot;Debug&quot;,
-    &quot;Gradle.JdbcGameRepositoryTest.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.JdbcGameRepositoryTest.shouldSaveAndGetGameById.executor&quot;: &quot;Debug&quot;,
-    &quot;Gradle.JdbcGenreRepositoryTest.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.JdbcPublisherRepositoryTest.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.JpaConsoleTest.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.JpaDeveloperTest.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.JpaGameConsoleTest.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.JpaGameEditionTest.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.JpaGameTest.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.JpaGenreTest.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.JpaPublisherTest.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.SchemaLoaderTest.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.Tests in 'cat.uvic.teknos.dam.kamika.repositories.jdbc.tests'.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.kamika [build].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.kamika [clean].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.kamika [wrapper].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.kamika:app [:app:cat.uvic.teknos.dam.kamika.app.App.main()].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.kamika:app [:app:cat.uvic.teknos.dam.kamika.console.App.main()].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.kamika:app [:app:cat.uvic.teknos.dam.kamika.console.WelcomeTest.main()].executor&quot;: &quot;Debug&quot;,
     &quot;Gradle.kamika:clients:console [:clients:console:cat.uvic.teknos.dam.kamika.client.App.main()].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.kamika:clients:console [:clients:console:cat.uvic.teknos.dam.kamika.client.ConsoleApp.main()].executor&quot;: &quot;Run&quot;,
     &quot;Gradle.kamika:server [:server:cat.uvic.teknos.dam.kamika.server.App.main()].executor&quot;: &quot;Run&quot;,
-    &quot;Repository.Attach.Annotations&quot;: &quot;false&quot;,
-    &quot;Repository.Attach.JavaDocs&quot;: &quot;false&quot;,
-    &quot;Repository.Attach.Sources&quot;: &quot;false&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;create.test.in.the.same.root&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;master&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/Asus/Source/Repos/kamika/clients/console/src/main/resources&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
     &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.537931&quot;,
-    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settingsdialog.project.gradle&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
-  <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Users\Asus\Source\Repos\kamika\clients\console\src\main\resources" />
-      <recent name="C:\Users\Asus\Source\Repos\kamika\clients\console" />
-      <recent name="C:\Users\Asus\Source\Repos\kamika\server" />
-      <recent name="C:\Users\Asus\Source\Repos\kamika\jpa\src\test\resources" />
-      <recent name="C:\Users\Asus\Source\Repos\kamika\jpa" />
-    </key>
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\Asus\Source\Repos\kamika\clients\console\src\main\resources" />
-      <recent name="C:\Users\Asus\Source\Repos\kamika\app\src\main\java\cat\uvic\teknos\dam\kamika\console\manager" />
-      <recent name="C:\Users\Asus\Source\Repos\kamika" />
-    </key>
-    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
-      <recent name="" />
-    </key>
-    <key name="CopyClassDialog.RECENTS_KEY">
-      <recent name="cat.uvic.teknos.dam.kamika.repositories.jdbc.datasources" />
-    </key>
-  </component>
   <component name="RunManager" selected="Application.cat.uvic.teknos.dam.kamika.client.App">
-    <configuration name="Client" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="cat.uvic.teknos.dam.kamika.client.Client" />
-      <module name="kamika.clients.console.main" />
+    <configuration name="App" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="cat.uvic.teknos.dam.kamika.server.App" />
+      <module name="kamika.server.main" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="cat.uvic.teknos.dam.kamika.client.*" />
+          <option name="PATTERN" value="cat.uvic.teknos.dam.kamika.server.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -228,79 +99,10 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="cat.uvic.teknos.dam.kamika.server.App" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="cat.uvic.teknos.dam.kamika.server.App" />
-      <module name="kamika.server.main" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="cat.uvic.teknos.dam.kamika.server.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="kamika [build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value="build" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <RunAsTest>false</RunAsTest>
-      <method v="2" />
-    </configuration>
-    <configuration name="kamika [wrapper]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value="wrapper" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <RunAsTest>false</RunAsTest>
-      <method v="2" />
-    </configuration>
-    <configuration default="true" type="JetRunConfigurationType">
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
-      <option name="filePath" />
-      <method v="2" />
-    </configuration>
     <recent_temporary>
       <list>
         <item itemvalue="Application.cat.uvic.teknos.dam.kamika.client.App" />
-        <item itemvalue="Application.Client" />
-        <item itemvalue="Gradle.kamika [build]" />
-        <item itemvalue="Gradle.kamika [wrapper]" />
-        <item itemvalue="Application.cat.uvic.teknos.dam.kamika.server.App" />
+        <item itemvalue="Application.App" />
       </list>
     </recent_temporary>
   </component>
@@ -315,125 +117,18 @@
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="088f3782-c2d2-4b0b-883d-631bfa3fd38e" name="Changes" comment="" />
-      <created>1744300044191</created>
+      <changelist id="8f9a6e03-20a9-4db8-86d8-ce59e175e59b" name="Changes" comment="" />
+      <created>1762181637051</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1744300044191</updated>
-      <workItem from="1744300045536" duration="948000" />
-      <workItem from="1745056704842" duration="1279000" />
-      <workItem from="1745148052939" duration="3350000" />
-      <workItem from="1745159117182" duration="2857000" />
-      <workItem from="1745237633210" duration="51000" />
-      <workItem from="1745311223462" duration="30000" />
-      <workItem from="1745500476193" duration="5754000" />
-      <workItem from="1745516643718" duration="396000" />
-      <workItem from="1746459424666" duration="269000" />
-      <workItem from="1746461115939" duration="660000" />
-      <workItem from="1746709949969" duration="5467000" />
-      <workItem from="1746875514474" duration="1756000" />
-      <workItem from="1747058095507" duration="2691000" />
-      <workItem from="1747315815941" duration="5642000" />
-      <workItem from="1747660557137" duration="2918000" />
-      <workItem from="1747918924214" duration="4503000" />
-      <workItem from="1748013624648" duration="3006000" />
-      <workItem from="1748193122441" duration="2382000" />
-      <workItem from="1748248767607" duration="4841000" />
-      <workItem from="1748263633446" duration="8330000" />
-      <workItem from="1748531478787" duration="7624000" />
-      <workItem from="1748539288171" duration="3478000" />
-      <workItem from="1748616071227" duration="1423000" />
-      <workItem from="1748702755226" duration="18131000" />
-      <workItem from="1748765809528" duration="8083000" />
-      <workItem from="1748869773023" duration="16933000" />
-      <workItem from="1748892278032" duration="5737000" />
-      <workItem from="1748955827049" duration="2083000" />
-      <workItem from="1748957949141" duration="15507000" />
-      <workItem from="1748984542787" duration="78000" />
-      <workItem from="1748984814890" duration="5254000" />
-      <workItem from="1749028235668" duration="598000" />
-      <workItem from="1749028856585" duration="9054000" />
-      <workItem from="1749042436496" duration="7482000" />
-      <workItem from="1749058768833" duration="11174000" />
-      <workItem from="1749117401716" duration="4103000" />
-      <workItem from="1749128627082" duration="16670000" />
-      <workItem from="1749213884154" duration="277000" />
-      <workItem from="1749214299374" duration="255000" />
-      <workItem from="1749221843112" duration="175000" />
-      <workItem from="1749222057796" duration="80000" />
-      <workItem from="1749222173752" duration="160000" />
-      <workItem from="1749383819125" duration="952000" />
-      <workItem from="1749385008256" duration="30305000" />
-      <workItem from="1749480686789" duration="14196000" />
-      <workItem from="1749496560607" duration="5044000" />
-      <workItem from="1749501646840" duration="11184000" />
-      <workItem from="1749545602899" duration="4134000" />
-      <workItem from="1749638685103" duration="1091000" />
-      <workItem from="1749639919760" duration="2123000" />
-      <workItem from="1758119819483" duration="11000" />
-      <workItem from="1758127963761" duration="831000" />
-      <workItem from="1758128820318" duration="4400000" />
-      <workItem from="1758720101286" duration="1364000" />
-      <workItem from="1759332451468" duration="4670000" />
-      <workItem from="1759687323117" duration="103000" />
-      <workItem from="1759934196304" duration="9512000" />
-      <workItem from="1760015545805" duration="120000" />
-      <workItem from="1760030497220" duration="55000" />
-      <workItem from="1760532402327" duration="17257000" />
-      <workItem from="1760551229018" duration="2576000" />
-      <workItem from="1761143141739" duration="8099000" />
-      <workItem from="1761302067335" duration="145000" />
-      <workItem from="1761584647547" duration="30000" />
-      <workItem from="1761750684535" duration="131000" />
-      <workItem from="1761750847565" duration="376000" />
+      <updated>1762181637051</updated>
+      <workItem from="1762181639357" duration="2562000" />
+      <workItem from="1762193384846" duration="828000" />
+      <workItem from="1762278855653" duration="4197000" />
     </task>
-    <task id="LOCAL-00001" summary="Added README.md">
-      <option name="closed" value="true" />
-      <created>1745161420850</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1745161420850</updated>
-    </task>
-    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
-  </component>
-  <component name="Vcs.Log.Tabs.Properties">
-    <option name="TAB_STATES">
-      <map>
-        <entry key="MAIN">
-          <value>
-            <State />
-          </value>
-        </entry>
-      </map>
-    </option>
-  </component>
-  <component name="VcsManagerConfiguration">
-    <MESSAGE value="Added README.md" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added README.md" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <breakpoint enabled="true" type="java-exception">
-          <properties class="java.sql.SQLException" package="java.sql" />
-          <option name="timeStamp" value="1" />
-        </breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/jdbc/src/main/java/cat/uvic/teknos/dam/kamika/repositories/jdbc/datasources/SingleConnectionDataSource.java</url>
-          <line>32</line>
-          <option name="timeStamp" value="2" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
-    <watches-manager>
-      <configuration name="GradleRunConfiguration">
-        <watch expression="com.mysql.cj.jdbc.StatementImpl.PING_MARKER" />
-      </configuration>
-    </watches-manager>
   </component>
 </project>

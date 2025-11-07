@@ -18,16 +18,15 @@ import java.util.Set;
 
 /**
  * A client for the /developers endpoint using RawHttp.
- * Dependencies (RawHttp, ObjectMapper) are injected via the constructor
- * to improve testability. Reads responses eagerly.
+ * Dependencies are injected for testability.
  * @author Your Name
- * @version 1.6 // Refactored for DI
+ * @version 1.6 // Added disconnect method
  */
 public class DeveloperApiClient {
-    private static final String HOST = "localhost:8081"; // Ensure this matches the server port
-    private static final int PORT = 8081;                // Ensure this matches the server port
-    private final RawHttp http;             // Injected dependency
-    private final ObjectMapper objectMapper; // Injected dependency
+    private static final String HOST = "localhost:8081"; // Points to server port 8081
+    private static final int PORT = 8081;                // Points to server port 8081
+    private final RawHttp http;
+    private final ObjectMapper objectMapper;
 
     /**
      * Constructs a new API client with its required dependencies.
@@ -59,7 +58,6 @@ public class DeveloperApiClient {
             if (response.getStatusCode() == 200) {
                 String jsonBody = response.getBody().orElseThrow(() -> new ClientException("Server response body is missing"))
                         .decodeBodyToString(StandardCharsets.UTF_8);
-                // Use the injected objectMapper
                 return objectMapper.readValue(jsonBody, new TypeReference<>() {});
             } else {
                 throw new ClientException("Server returned an error. Status: " + response.getStatusCode());
@@ -89,8 +87,6 @@ public class DeveloperApiClient {
             if (response.getStatusCode() == 200) {
                 String jsonBody = response.getBody().orElseThrow(() -> new ClientException("Server response body is missing"))
                         .decodeBodyToString(StandardCharsets.UTF_8);
-                // Use the injected objectMapper
-                // Note: readValue might still need DeveloperImpl.class if abstract mapping wasn't done on the ObjectMapper passed in
                 return Optional.of(objectMapper.readValue(jsonBody, DeveloperImpl.class));
             } else if (response.getStatusCode() == 404) {
                 return Optional.empty();
@@ -110,7 +106,6 @@ public class DeveloperApiClient {
      */
     public Developer create(Developer developer) {
         try {
-            // Use the injected objectMapper
             String jsonPayload = objectMapper.writeValueAsString(developer);
             RawHttpRequest request = http.parseRequest(
                             "POST /developers HTTP/1.1\r\n" +
@@ -128,7 +123,6 @@ public class DeveloperApiClient {
                 if (response.getStatusCode() == 201) {
                     String jsonBody = response.getBody().orElseThrow(() -> new ClientException("Server response body is missing"))
                             .decodeBodyToString(StandardCharsets.UTF_8);
-                    // Use the injected objectMapper
                     return objectMapper.readValue(jsonBody, DeveloperImpl.class);
                 } else {
                     throw new ClientException("Server returned an error. Status: " + response.getStatusCode());
@@ -147,7 +141,6 @@ public class DeveloperApiClient {
      */
     public boolean update(Developer developer) {
         try {
-            // Use the injected objectMapper
             String jsonPayload = objectMapper.writeValueAsString(developer);
             RawHttpRequest request = http.parseRequest(
                             "PUT /developers/" + developer.getId() + " HTTP/1.1\r\n" +
@@ -194,6 +187,34 @@ public class DeveloperApiClient {
             }
         } catch (IOException e) {
             throw new ClientException("Error connecting to or reading from the server: " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Sends a graceful disconnect message to the server, typically on client inactivity.
+     * Waits for an "ACK" acknowledgement.
+     *
+     * @return true if acknowledgement ("ACK") was received, false otherwise.
+     * @throws ClientException if a connection error occurs.
+     */
+    public boolean sendDisconnect() {
+        RawHttpRequest request = http.parseRequest(
+                "POST /disconnect HTTP/1.1\r\n" +
+                        "Host: " + HOST + "\r\n" +
+                        "Connection: close\r\n" +
+                        "\r\n");
+
+        try (Socket socket = new Socket("localhost", PORT)) {
+            request.writeTo(socket.getOutputStream());
+            RawHttpResponse<?> response = http.parseResponse(socket.getInputStream()).eagerly();
+
+            if (response.getStatusCode() == 200) {
+                String body = response.getBody().orElseThrow().decodeBodyToString(StandardCharsets.UTF_8);
+                return "ACK".equals(body.trim());
+            }
+            return false;
+        } catch (IOException e) {
+            throw new ClientException("Error sending disconnect message: " + e.getMessage(), e);
         }
     }
 }

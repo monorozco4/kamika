@@ -8,13 +8,14 @@ import cat.uvic.teknos.dam.kamika.server.controllers.Controller;
 import cat.uvic.teknos.dam.kamika.server.controllers.DeveloperController;
 import cat.uvic.teknos.dam.kamika.server.router.RequestRouter;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * The main entry point for the Kamika Server application.
- * This class follows the Dependency Injection pattern by creating and wiring all application
- * components, then starting the server.
- * @author Montse
- * @version 2.0.0
+ * This class now also initializes and injects a thread pool for concurrent client handling.
+ * @author Your Name
+ * @version 1.1 // Updated for Thread Pool
  */
 public class App {
 
@@ -27,18 +28,20 @@ public class App {
 
         DataSource dataSource = configureDataSource();
         RequestRouter router = configureRouter(dataSource);
-        startServer(router);
+
+        ExecutorService threadPool = Executors.newCachedThreadPool();
+
+        startServer(router, threadPool);
     }
 
     /**
      * Configures and returns the data source for database connections.
-     *
      * @return A configured {@link DataSource} instance.
      */
     private static DataSource configureDataSource() {
         return new SingleConnectionDataSource(
                 "mysql",
-                "localhost",
+                "localhost:3306",
                 "kamika",
                 "root",
                 "teknos"
@@ -47,7 +50,6 @@ public class App {
 
     /**
      * Configures the request router with all the application's controllers.
-     *
      * @param dataSource The data source needed by repositories.
      * @return A configured {@link RequestRouter} instance.
      */
@@ -66,9 +68,10 @@ public class App {
      * Creates and starts a new Server instance.
      *
      * @param router The fully configured router to be used by the server.
+     * @param threadPool The thread pool to manage concurrent client connections.
      */
-    private static void startServer(RequestRouter router) {
-        var server = new Server(8081, router);
+    private static void startServer(RequestRouter router, ExecutorService threadPool) {
+        var server = new Server(8081, router, threadPool); // Assegura't que el port és el correcte
         server.start();
     }
 }
