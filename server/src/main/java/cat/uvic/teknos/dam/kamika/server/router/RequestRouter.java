@@ -13,7 +13,7 @@ import java.util.Map;
  * Routes HTTP requests to the appropriate controller or handles
  * special protocol messages like DISCONNECT.
  * @author Your Name
- * @version 2.1 // Added DISCONNECT handling
+ * @version 2.0.1
  */
 public class RequestRouter {
     private final Map<String, Controller> controllers = new HashMap<>();
@@ -39,14 +39,10 @@ public class RequestRouter {
         String method = request.getMethod();
         String path = request.getUri().getPath();
 
-        // Handle the special inactivity disconnect message
         if ("POST".equalsIgnoreCase(method) && "/disconnect".equals(path)) {
             return handleDisconnect();
         }
 
-        // --- Standard Resource Routing ---
-
-        // Simple routing: get the first part of the path (e.g., /developers/1 -> developers)
         String[] pathParts = path.split("/");
         if (pathParts.length < 2 || pathParts[1].isEmpty()) {
             return createNotFoundResponse();
@@ -56,10 +52,8 @@ public class RequestRouter {
         Controller controller = controllers.get(resourceName);
 
         if (controller != null) {
-            // We found a controller, let it handle the request
             return controller.handle(request);
         } else {
-            // No controller registered for this resource
             return createNotFoundResponse();
         }
     }
@@ -74,10 +68,9 @@ public class RequestRouter {
         String ackBody = "ACK";
 
         try {
-            // As per requirements, wait 1 second before closing
             Thread.sleep(1000);
         } catch (InterruptedException e) {
-            Thread.currentThread().interrupt(); // Restore the interrupted status
+            Thread.currentThread().interrupt();
         }
 
         return http.parseResponse(

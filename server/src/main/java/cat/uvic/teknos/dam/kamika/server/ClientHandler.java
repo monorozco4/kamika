@@ -22,7 +22,7 @@ import java.util.logging.Logger;
  * shared client counter and logs the thread handling the request.
  *
  * @author Your Name
- * @version 2.2 // Added thread logging and client counting
+ * @version 2.0.1
  */
 public class ClientHandler implements Runnable {
     private static final Logger logger = Logger.getLogger(ClientHandler.class.getName());

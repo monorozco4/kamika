@@ -20,22 +20,20 @@ import java.util.concurrent.TimeUnit;
  * Handles the main logic and user interface for the console client application.
  * Dependencies are injected for testability.
  * Includes an inactivity monitor to automatically disconnect after a timeout.
+ * All user-facing output is in English.
  * @author Your Name
- * @version 2.0 // Added Inactivity Monitor
+ * @version 2.0.1
  */
 public class Client {
 
-    // Dependencies injected via constructor
-    private final Scanner scanner; // Used for parsing user input strings
+    private final Scanner scanner;
     private final ModelFactory modelFactory;
     private final DeveloperApiClient developerApi;
 
-    // Internal components for non-blocking input and inactivity timer
     private final BufferedReader userIn = new BufferedReader(new InputStreamReader(System.in));
     private final ScheduledExecutorService inactivityScheduler;
-    private ScheduledFuture<?> inactivityFuture; // Holds the scheduled disconnect task
+    private ScheduledFuture<?> inactivityFuture;
 
-    // 2 minutes in milliseconds
     private static final long INACTIVITY_TIMEOUT_MS = 120_000;
 
     /**
@@ -49,7 +47,6 @@ public class Client {
         this.modelFactory = modelFactory;
         this.developerApi = developerApi;
 
-        // Create a daemon thread for the inactivity monitor
         this.inactivityScheduler = Executors.newSingleThreadScheduledExecutor(runnable -> {
             Thread t = new Thread(runnable, "InactivityMonitorThread");
             t.setDaemon(true);
@@ -70,16 +67,14 @@ public class Client {
             while (true) {
                 printMenu();
 
-                // 1. Schedule the disconnect task
                 resetInactivityTimer();
 
                 String choice = "";
                 try {
-                    // 2. Wait for user input in a non-blocking way
                     while (!userIn.ready()) {
-                        Thread.sleep(200); // Poll every 200ms
+                        Thread.sleep(200);
                     }
-                    choice = userIn.readLine(); // Read the full line
+                    choice = userIn.readLine();
 
                 } catch (IOException e) {
                     System.err.println("\n[INPUT ERROR] " + e.getMessage());
@@ -90,12 +85,10 @@ public class Client {
                     break; // Exit loop
                 }
 
-                // 3. If we get here, user provided input. Cancel the scheduled disconnect.
                 if (inactivityFuture != null) {
                     inactivityFuture.cancel(false);
                 }
 
-                // 4. Process the user's choice
                 if (choice == null) break; // End of stream
 
                 switch (choice.trim()) {
@@ -131,7 +124,6 @@ public class Client {
         if (inactivityFuture != null) {
             inactivityFuture.cancel(false);
         }
-        // Schedule a new disconnect task
         inactivityFuture = inactivityScheduler.schedule(
                 this::handleInactivityDisconnect,
                 INACTIVITY_TIMEOUT_MS,
@@ -154,7 +146,6 @@ public class Client {
         } catch (ClientException e) {
             System.err.println("[INACTIVITY] Error during disconnect: " + e.getMessage());
         } finally {
-            // Force the application to exit
             System.exit(0);
         }
     }
@@ -163,10 +154,10 @@ public class Client {
      * Cleans up resources (scheduler, input reader) before exiting.
      */
     private void shutdown() {
-        inactivityScheduler.shutdownNow(); // Stop the inactivity timer thread
+        inactivityScheduler.shutdownNow();
         try {
             userIn.close();
-            scanner.close(); // Close the scanner we are using for parsing
+            scanner.close();
         } catch (IOException e) {
             System.err.println("Error closing input stream: " + e.getMessage());
         }
@@ -186,8 +177,6 @@ public class Client {
         System.out.println("0. Exit");
         System.out.print("Enter your choice: ");
     }
-
-    // --- Mètodes d'Acció (Iguals que abans) ---
 
     /**
      * Handles the "List all developers" action.
@@ -284,12 +273,17 @@ public class Client {
      */
     private void printDeveloperList(Set<Developer> developers) {
         System.out.println("--- Developer List ---");
-        for (Developer dev : developers) {
-            System.out.printf("ID: %d | Name: %s | Country: %s | Founded: %d%n",
-                    dev.getId(),
-                    dev.getName(),
-                    dev.getCountry(),
-                    dev.getFoundationYear());
+        if (developers == null || developers.isEmpty()) {
+            System.out.println(" (No developers to display) ");
+        } else {
+            for (Developer dev : developers) {
+                System.out.printf("ID: %d | Name: %s | Country: %s | Founded: %d%n",
+                        dev.getId(),
+                        dev.getName() != null ? dev.getName() : "N/A",
+                        dev.getCountry() != null ? dev.getCountry() : "N/A",
+                        dev.getFoundationYear()
+                );
+            }
         }
         System.out.println("----------------------");
     }

@@ -29,4 +29,4 @@ for new games you want to play! Search for new games to play and have fun with!
 | 1.0.6   | Minor improvements               |
 | 1.1.0   | App available                    |
 | 2.0.0   | Client and server added          |
-| 2.0.0   | Concurrent Server and<br/> Client Management          |
+| 2.0.1   | Concurrent Server and<br/> Client Management          |

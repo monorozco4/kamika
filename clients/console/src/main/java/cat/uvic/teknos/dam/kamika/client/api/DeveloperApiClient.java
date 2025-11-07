@@ -20,11 +20,11 @@ import java.util.Set;
  * A client for the /developers endpoint using RawHttp.
  * Dependencies are injected for testability.
  * @author Your Name
- * @version 1.6 // Added disconnect method
+ * @version 2.0.1
  */
 public class DeveloperApiClient {
-    private static final String HOST = "localhost:8081"; // Points to server port 8081
-    private static final int PORT = 8081;                // Points to server port 8081
+    private static final String HOST = "localhost:8081";
+    private static final int PORT = 8081;
     private final RawHttp http;
     private final ObjectMapper objectMapper;
 

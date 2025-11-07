@@ -15,7 +15,7 @@ import java.util.concurrent.Executors;
  * The main entry point for the Kamika Server application.
  * This class now also initializes and injects a thread pool for concurrent client handling.
  * @author Your Name
- * @version 1.1 // Updated for Thread Pool
+ * @version 2.0
  */
 public class App {
 

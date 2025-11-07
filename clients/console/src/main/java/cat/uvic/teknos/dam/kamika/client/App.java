@@ -15,7 +15,7 @@ import java.util.Scanner;
  * It manually creates and injects all dependencies into the main {@link Client} class
  * following the Dependency Injection pattern.
  * @author Your Name
- * @version 1.5 // Cleaned up startup logging
+ * @version 2.0.1
  */
 public class App {
 

@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ExecutorService;
-// NOU IMPORT per al comptador atòmic
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -13,7 +12,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * to handle multiple client connections concurrently.
  * It also maintains a count of active clients and reports it via a daemon thread.
  * @author Your Name
- * @version 2.1 // Added daemon thread and client counter
+ * @version 2.0.1
  */
 public class Server {
     private final int port;
@@ -61,7 +60,6 @@ public class Server {
                 } catch (IOException e) {
                     if (!running) {
                         System.out.println("Server is shutting down.");
-                        break;
                     }
                     System.err.println("Error accepting client connection: " + e.getMessage());
                 }
@@ -74,8 +72,7 @@ public class Server {
     }
 
     /**
-     * ✅ REQUISIT 7: Aquest mètode crea i engega el fil daemon.
-     * Un fil daemon no impedeix que l'aplicació es tanqui si és l'únic fil que queda.
+     * Starts a new daemon thread that monitors and reports the active client count every minute.
      */
     private void startClientMonitor() {
         Runnable monitorTask = () -> {
@@ -83,10 +80,10 @@ public class Server {
                 while (true) {
                     Thread.sleep(60000);
 
-                    System.out.println("[SERVER MONITOR] Clients connectats actualment: " + activeClients.get());
+                    System.out.println("[SERVER MONITOR] Currently connected clients: " + activeClients.get());
                 }
             } catch (InterruptedException e) {
-                System.out.println("[SERVER MONITOR] Fil monitor interromput i aturat.");
+                System.out.println("[SERVER MONITOR] Monitor thread interrupted and stopped.");
             }
         };
 
@@ -95,7 +92,7 @@ public class Server {
         monitorThread.setName("ClientMonitorThread");
         monitorThread.start();
 
-        System.out.println("[SERVER MONITOR] El fil de monitorització de clients s'ha iniciat.");
+        System.out.println("[SERVER MONITOR] Client monitoring thread has started.");
     }
 
     /**
@@ -113,7 +110,7 @@ public class Server {
                 serverSocket.close();
             }
         } catch (IOException e) {
-            System.err.println("Error closing server socket: " + e.getMessage());
+            System.err.println("Error closing server socket: " + e.getMessage()); // English
         }
     }
 }
