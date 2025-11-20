@@ -4,20 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8f9a6e03-20a9-4db8-86d8-ce59e175e59b" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/copilot.data.migration.ask.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/copilot.data.migration.ask2agent.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/copilot.data.migration.edit.xml" beforeDir="false" />
+    <list default="true" id="8f9a6e03-20a9-4db8-86d8-ce59e175e59b" name="Changes" comment="&quot;Translation to English&quot;">
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules/jpa/kamika.jpa.main.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/clients/console/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/clients/console/build.gradle.kts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/clients/console/src/main/java/cat/uvic/teknos/dam/kamika/client/App.java" beforeDir="false" afterPath="$PROJECT_DIR$/clients/console/src/main/java/cat/uvic/teknos/dam/kamika/client/App.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/src/main/java/cat/uvic/teknos/dam/kamika/server/App.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/cat/uvic/teknos/dam/kamika/server/App.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/src/main/java/cat/uvic/teknos/dam/kamika/server/ClientHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/cat/uvic/teknos/dam/kamika/server/ClientHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/src/main/java/cat/uvic/teknos/dam/kamika/server/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/cat/uvic/teknos/dam/kamika/server/Server.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utilities/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/utilities/build.gradle.kts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -28,6 +18,13 @@
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
     </projectState>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -55,6 +52,7 @@
   </component>
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
+    &quot;Gradle.CryptoUtilsTest.executor&quot;: &quot;Run&quot;,
     &quot;Gradle.kamika:clients:console [:clients:console:cat.uvic.teknos.dam.kamika.client.App.main()].executor&quot;: &quot;Run&quot;,
     &quot;Gradle.kamika:server [:server:cat.uvic.teknos.dam.kamika.server.App.main()].executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
@@ -72,7 +70,7 @@
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
-  <component name="RunManager" selected="Application.cat.uvic.teknos.dam.kamika.client.App">
+  <component name="RunManager" selected="Gradle.CryptoUtilsTest">
     <configuration name="App" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="cat.uvic.teknos.dam.kamika.server.App" />
       <module name="kamika.server.main" />
@@ -99,8 +97,33 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="CryptoUtilsTest" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":utilities:test" />
+            <option value="--tests" />
+            <option value="&quot;cat.uvic.teknos.dam.kamika.security.tests.CryptoUtilsTest&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>true</RunAsTest>
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Gradle.CryptoUtilsTest" />
         <item itemvalue="Application.cat.uvic.teknos.dam.kamika.client.App" />
         <item itemvalue="Application.App" />
       </list>
@@ -125,10 +148,58 @@
       <workItem from="1762181639357" duration="2562000" />
       <workItem from="1762193384846" duration="828000" />
       <workItem from="1762278855653" duration="4197000" />
+      <workItem from="1762523584937" duration="4097000" />
+      <workItem from="1762533508329" duration="45000" />
+      <workItem from="1762966888365" duration="1152000" />
+      <workItem from="1763054739139" duration="1668000" />
+      <workItem from="1763143382702" duration="679000" />
+      <workItem from="1763236325722" duration="135000" />
+      <workItem from="1763236475437" duration="7000" />
     </task>
+    <task id="LOCAL-00001" summary="&quot;Concurrent Server and Client Management implemented&quot;">
+      <option name="closed" value="true" />
+      <created>1762529843759</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1762529843760</updated>
+    </task>
+    <task id="LOCAL-00002" summary="&quot;Translation to English&quot;">
+      <option name="closed" value="true" />
+      <created>1762532797036</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1762532797036</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="&quot;Concurrent Server and Client Management implemented&quot;" />
+    <MESSAGE value="&quot;Translation to English&quot;" />
+    <option name="LAST_COMMIT_MESSAGE" value="&quot;Translation to English&quot;" />
+  </component>
+  <component name="github-copilot-workspace">
+    <instructionFileLocations>
+      <option value=".github/instructions" />
+    </instructionFileLocations>
+    <promptFileLocations>
+      <option value=".github/prompts" />
+    </promptFileLocations>
   </component>
 </project>
